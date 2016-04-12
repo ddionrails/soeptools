@@ -25,6 +25,7 @@ program define soepusemerge , nclass
 	version 13
 	syntax anything(name=pathwfile) using/ , clear [keyvars(namelist) verbose]
 
+* check whether getfilename is installed
 quietly capture findfile getfilename2.ado
 if "`r(fn)'" == "" {
          di as txt "package getfilename2 needs to be installed first;"
