@@ -155,16 +155,21 @@ foreach fileno of numlist 1/`filescount' {
 quietly use `usefile', clear
 foreach fileno of numlist 1/`filescount' {
 	local file : word `fileno' of `mergefiles'
-	display "Processing file: `file':"
+	display "Related file: `file':"
 	if "`file`fileno'_usevars'"=="" | "`file`fileno'_status'"=="NO, rows do not match" {
 		display "Not merged."
+		display
 	}
 	else {
 		foreach var of varlist `file`fileno'_usevars' {
 			quietly replace `var'=.
 			* display "Set `var' (in master) to . (missing)."
 		}
-		display "Merge by variable(s) `keyvars' and update variables `file`fileno'_usevars'."
+		display "Updated variable(s): `file`fileno'_usevars'."
+		if "`file`fileno'_notusevars'"!="" {
+			display "Not updated variable(s): `file`fileno'_notusevars'."
+		}
+		display
 		*preserve
 		*use `mergefile`fileno'', clear
 		*desc
@@ -174,7 +179,8 @@ foreach fileno of numlist 1/`filescount' {
 			keepusing(`file`fileno'_usevars') assert(match_update) update nogen
 		}
 }
-
+display "Merged by variable(s): `keyvars'"
+display 
 
 end
 /*-------------------------------------------------------------------------------
