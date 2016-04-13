@@ -19,7 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-*! version 0.1 12 April 2016 - initial release
+*! version 0.1 13 April 2016 - initial release
 
 program define soepusemerge , nclass
 	version 13
