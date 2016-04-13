@@ -23,7 +23,7 @@ help for {cmd:soepusemerge}{right:version 0.1  (13 April 2016)}
 
 {pstd}
 {cmd:soepusemerge} opens dataset {help filename:{it:filename}} and merges variables from all related datasets in {it:pathname}, performing a merge 1:1 with key variables specified in the option {opt keyvars} while requiring a complete match with assert(match) and merging only variables without missings. Option {opt verbose} produces much more output.
-The related dataset must have the name of the filename plus a suffix which start with an underscore. Example: filename is root.dta, a file in {it:pathname} with name root_xy.dta would be recognized as related.
+A related dataset must have the name of the filename plus a suffix which start with an underscore. Example: filename is root.dta, a file in {it:pathname} with name root_xy.dta would be recognized as related.
 {p_end}
 
 
