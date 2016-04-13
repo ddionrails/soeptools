@@ -14,7 +14,7 @@ help for {cmd:soepusemerge}{right:version 0.1  (12 April 2016)}
 {title:Syntax}
 
 {p 8 17 2}
-{cmd:soepusemerge} {help filename:{it:filename}} {cmd:using} {it:pathname}, {opt keyvars({help varlist:{it:varlist}})} {opt clear} {opt verbose}
+{cmd:soepusemerge} {help filename:{it:filename}} {cmd:using} {it:pathname}, {opt clear} [{opt keyvars(varlist)}  {opt verbose}]
 {p_end}
 
 
@@ -22,7 +22,7 @@ help for {cmd:soepusemerge}{right:version 0.1  (12 April 2016)}
 {title:Description}
 
 {pstd}
-{cmd:soepusemerge} opens dataset {help filename:{it:filename}} and merges variables from all related datasets in {it:pathname}, performing a merge 1:1 with key variables specified in the keyvars options while requiring a complete match with assert(match) and merging only variables without missings.
+{cmd:soepusemerge} opens dataset {help filename:{it:filename}} and merges variables from all related datasets in {it:pathname}, performing a merge 1:1 with key variables specified in the option {opt keyvars} while requiring a complete match with assert(match) and merging only variables without missings. Option {opt verbose} produces much more output.
 {p_end}
 
 
@@ -30,7 +30,7 @@ help for {cmd:soepusemerge}{right:version 0.1  (12 April 2016)}
 {title:Remarks}
 
 {pstd}
-This command is part of the {browse "http://ddionrails.org/soeptools":dortools} bundle. Please inform the author about issues using this {browse "https://github.com/ddionrails/soeptools/issues":tracker}.
+This command is part of the {browse "http://ddionrails.org/soeptools":soeptools} bundle. Please inform the author about issues using this {browse "https://github.com/ddionrails/soeptools/issues":tracker}.
 {p_end}
 
 {pstd}
