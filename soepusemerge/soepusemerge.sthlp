@@ -1,6 +1,6 @@
 {smcl}
-{* *! version 0.1 12 April 2016}{...}
-help for {cmd:soepusemerge}{right:version 0.1  (12 April 2016)}
+{* *! version 0.1 13 April 2016}{...}
+help for {cmd:soepusemerge}{right:version 0.1  (13 April 2016)}
 {hline}
 
 
