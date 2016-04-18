@@ -9,8 +9,11 @@ d Distribution-Date: 20160413
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+* 20160418 version 0.2 18 April 2016 - initial release
 * 20160413 version 0.1 13 April 2016 - initial release
 
+f soepgenpre/soepgenpre.ado
+f soepgenpre/soepgenpre.sthlp
 f soepusemerge/soepusemerge.ado
 f soepusemerge/soepusemerge.sthlp
 f soeptools/gnugpl.sthlp
