@@ -9,8 +9,9 @@ d Distribution-Date: 20160420
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+* 20160420 version 0.3 20 April 2016 - use soepidvars in soepusemerge to detect keyvars
 * 20160420 version 0.3 18 April 2016 - initial release of soepidvars
-* 20160418 version 0.2 18 April 2016 - initial release
+* 20160418 version 0.2 18 April 2016 - introduce soepgenpre
 * 20160413 version 0.1 13 April 2016 - initial release
 
 f soepidvars/soepidvars.ado
