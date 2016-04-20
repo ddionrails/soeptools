@@ -10,7 +10,7 @@ title: Stata ados from DIW Berlin / GSOEP
 net install soeptools, from(http://ddionrails.org/soeptools/)
 
 ## Update
-not working yet
+adoupdate soeptools, update
 
 ## Uninstall
 ado uninstall soeptools
