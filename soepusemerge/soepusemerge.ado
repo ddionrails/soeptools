@@ -53,16 +53,6 @@ local filepath = r(path)
 if "`verbose'"=="verbose" {
 	display "fileroot from getfilename2:`fileroot'"
 }
-* use default keyvars, if no keyvars specified
-if `"`keyvars'"'=="" {
-	local keyvars_bdpgen persnr
-	local keyvars_bepgen persnr
-	local keyvars = "`keyvars_`fileroot''"	
-}
-if "`verbose'"=="verbose" {
-	display "used keyvars:`keyvars'"
-}
-
 tempfile usefile
 quietly use "`filepath'/`fileroot'", clear
 quietly ds
@@ -71,6 +61,20 @@ if "`verbose'"=="verbose" {
 	display "variables in master:`mastervars'"
 }
 quietly save `usefile'
+
+* use keyvars from soepidvars, if no keyvars specified
+if `"`keyvars'"'=="" {
+	soepidvars, verbose
+	*local keyvars_bdpgen persnr
+	*local keyvars_bepgen persnr
+	*local keyvars = "`keyvars_`fileroot''"	
+	soepidvars, verbose
+	local keyvars = r(idvars)
+}
+if "`verbose'"=="verbose" {
+	display "used keyvars: `keyvars'"
+}
+
 * generate tempfile allrows with all rows
 keep `keyvars'
 tempfile allrows

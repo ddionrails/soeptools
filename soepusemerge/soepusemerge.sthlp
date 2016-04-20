@@ -1,6 +1,6 @@
 {smcl}
-{* *! version 0.1 13 April 2016}{...}
-help for {cmd:soepusemerge}{right:version 0.1  (13 April 2016)}
+{* *! version 0.4 20 April 2016}{...}
+help for {cmd:soepusemerge}{right:version 0.4  (20 April 2016)}
 {hline}
 
 
@@ -17,12 +17,22 @@ help for {cmd:soepusemerge}{right:version 0.1  (13 April 2016)}
 {cmd:soepusemerge} {help filename:{it:filename}} {cmd:using} {it:pathname}, {opt clear} [{opt keyvars(varlist)}  {opt verbose}]
 {p_end}
 
+{synoptset 20 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:Main}
+{synopt:{opt clear}}necessary because data in memory will be replaced{p_end}
+{synopt:{opt keyvars()}}which variables should be used for merging. If not specified {help soepidvars} is used for an educated guess.{p_end}
+{synopt:{opt verbose}}produces much more output{p_end}
+{synoptline}
 
 {marker description}{...}
 {title:Description}
 
 {pstd}
-{cmd:soepusemerge} opens dataset {help filename:{it:filename}} and merges variables from all related datasets in {it:pathname}, performing a merge 1:1 with key variables specified in the option {opt keyvars} while requiring a complete match with assert(match) and merging only variables without missings. Option {opt verbose} produces much more output.
+{cmd:soepusemerge} opens dataset {help filename:{it:filename}} and merges variables from all related datasets in {it:pathname}, performing a merge 1:1 with key variables specified in the option {opt keyvars} while requiring a complete match with assert(match) and merging only variables without missings.
+
+{pstd}
 A related dataset must have the name of the filename plus a suffix which start with an underscore. Example: filename is root.dta, a file in {it:pathname} with name root_xy.dta would be recognized as related.
 {p_end}
 
