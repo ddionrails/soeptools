@@ -32,7 +32,7 @@ program define soepidvars, rclass
 
 * this variable lists contain the know id variables of all datasets
 * for datasets of persons, households and interviewers	
-local pids persnr zypnr persnre kidprofr persnrm persnre vpnr spellnr mignr syear svyyear erhebj kennung bioage 
+local pids persnr zvpnr vpnr persnre kidprofr persnrm spellnr bioage mignr syear svyyear erhebj kennung hhnr
 local hids hhnrakt erhebj svyyear syear kennung spellnr mj hhnr
 local iids intnr intnr_tns intid intnum intid syear
 
@@ -44,9 +44,10 @@ local testiids : list iids & mastervars
 local testhids : list hids & mastervars
 local testpids : list pids & mastervars
 if "`verbose'"=="verbose" {
-	display "testiids: `testiids'"
-	display "testhids: `testhids'"
-	display "testpids: `testpids'"
+	display "Found variables for each scenario:"
+	display "person: `testpids'"
+	display "household: `testhids'"
+	display "interviewer: `testiids'"
 }
 
 * first the list for datasets of persons, then households, then interviewers
@@ -57,19 +58,21 @@ local alllists testpids testhids testiids
 
 foreach varlist of local alllists {
 	if "`verbose'"=="verbose" {
-		display "test: `varlist'"
+		if "`varlist'"=="testpids" display "Test scenario 'person'."
+		if "`varlist'"=="testhids" display "Test scenario 'household'."
+		if "`varlist'"=="testiids" display "Test scenario 'interviewer'."
 	}
 	local testids ""
 	foreach var of local `varlist' {
 		local testids = "`testids' `var'"
 		if "`verbose'"=="verbose" {
-			display "testids: `testids'"
+			display "  Test variables: `testids'"
 		}
 		capture isid `testids'
 		if _rc==0 {
 			local found "yes"
 			if "`verbose'"=="verbose" {
-				display "above: isid"
+				display "For the above varlist isid returned no error."
 			}
 			continue, break
 		}
@@ -79,6 +82,8 @@ foreach varlist of local alllists {
 }
 
 return local idvars `testids'
-
+return local config_idvars_p `pids'
+return local config_idvars_h `hids'
+return local config_idvars_i `iids'
 end
 		
