@@ -19,12 +19,12 @@
 -------------------------------------------------------------------------------*/
 *! soepgenpre.ado: Consolidate files from three sources (consolidated, partial, complete)
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-*! version 0.2 18 April 2016 - initial release
+* 20160512 version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
+* 20160418 version 0.2 18 April 2016 - introduce soepgenpre
 
 program define soepgenpre, nclass
 	version 13 
-	syntax , version(string) [humepath(string) verbose empty replace]
-	* syntax , version(string) [humepath(asis)]
+	syntax , version(string) [humepath(string) verbose empty replace dopartial docomplete]
 if "`verbose'"=="verbose" {
 	display `"version:`version':"'
 	display `"humepathpre:`humepath':"'
@@ -47,6 +47,7 @@ if "`verbose'"=="verbose" {
 	display `"partial:+`partial'+"'
 	display `"complete:+`complete'+"'
 	display `"pre:+`pre'+"'
+	display `"dopartial:+`dopartial'+"'
 }
 
 * empty: delete files in pre folder
@@ -129,13 +130,13 @@ while `number' > 0 {
 	foreach check of local completes {
 		if "`check'" == "`file'" local filestatus "complete"
 	}
-	if "`filestatus'" == "complete" {
+	if "`filestatus'" == "complete" & "`dopartial'"=="" {
 		if "`verbose'"=="verbose" {
 			display "`file' is complete: copy from complete"
 		}
 		copy "`complete'`file'.dta" "`pre'`file'.dta", `replace'
 	}
-	if "`filestatus'" == "partial" {
+	if "`filestatus'" == "partial" & "`docomplete'"=="" {
 		if "`verbose'"=="verbose" {
 			display "`file' is partial: merge with related files"			
 		}
@@ -144,7 +145,7 @@ while `number' > 0 {
 		quietly: soepusemerge "`consolidated'`file'.dta" using "`partial'", clear `verbose'
 		saveold "`pre'`file'", `replace'
 	}
-	if "`filestatus'" == "consolidated" {
+	if "`filestatus'" == "consolidated" & "`docomplete'"=="" & "`dopartial'"=="" {
 		if "`verbose'"=="verbose" {
 			display "`file' is only in consolidated: copy from consolidated"
 		}

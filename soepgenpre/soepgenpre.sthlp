@@ -1,6 +1,6 @@
 {smcl}
-{* *! version 0.1 18 April 2016}{...}
-help for {cmd:soepgenpre}{right:version 0.1  (18 April 2016)}
+{* *! version 0.5 12 May 2016}{...}
+help for {cmd:soepgenpre}{right:version 0.5  (12 May 2016}
 {hline}
 
 
@@ -14,7 +14,7 @@ help for {cmd:soepgenpre}{right:version 0.1  (18 April 2016)}
 {title:Syntax}
 
 {p 8 17 2}
-{cmd:soepgenpre}, {opt version(string)} [{opt humepath(string)} {opt verbose} {opt empty} {opt replace}]
+{cmd:soepgenpre}, {opt version(string)} [{opt humepath(string)} {opt verbose} {opt empty} {opt dopartial} {opt docomplete} {opt replace}]
 {p_end}
 
 {synoptset 20 tabbed}{...}
@@ -22,9 +22,11 @@ help for {cmd:soepgenpre}{right:version 0.1  (18 April 2016)}
 {synoptline}
 {synopt:{opt version(version)}}SOEP version, e.g. version(v31). This information is used to construct pathnames like //hume/rdc-gen/generations/soep-core/soep.v31/partial{p_end}
 {synopt:{opt humepath(string)}}which string has to preced /rdc-gen/ in order to get a valid path. Default for windows computers and a special linux computer within the SOEP are included.{p_end}
-{synopt:{opt verbose}}display a lot of output{p_end}
+{synopt:{opt docomplete}}do not copy from consolidated, merge partial files only if {opt dopartial} is specified{p_end}
+{synopt:{opt dopartial}}do not copy from consolidated, copy complete files only if {opt docomplete} is specified{p_end}
 {synopt:{opt empty}}empty pre-folder{p_end}
 {synopt:{opt replace}}replace when copying or saving{p_end}
+{synopt:{opt verbose}}display a lot of output{p_end}
 {synoptline}
 
 {marker description}{...}
