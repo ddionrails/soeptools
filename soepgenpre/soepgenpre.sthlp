@@ -1,6 +1,6 @@
 {smcl}
-{* *! version 0.5 12 May 2016}{...}
-help for {cmd:soepgenpre}{right:version 0.5  (12 May 2016}
+{* *! version 0.6 23 May 2016}{...}
+help for {cmd:soepgenpre}{right:version 0.6  (23 May 2016}
 {hline}
 
 
@@ -24,6 +24,7 @@ help for {cmd:soepgenpre}{right:version 0.5  (12 May 2016}
 {synopt:{opt humepath(string)}}which string has to preced /rdc-gen/ in order to get a valid path. Default for windows computers and a special linux computer within the SOEP are included.{p_end}
 {synopt:{opt docomplete}}do not copy from consolidated, merge partial files only if {opt dopartial} is specified{p_end}
 {synopt:{opt dopartial}}do not copy from consolidated, copy complete files only if {opt docomplete} is specified{p_end}
+{synopt:{opt rsync}}use rsync (as shell command) instead of copy (from complete and consolidated){p_end}
 {synopt:{opt empty}}empty pre-folder{p_end}
 {synopt:{opt replace}}replace when copying or saving{p_end}
 {synopt:{opt verbose}}display a lot of output{p_end}

@@ -5,10 +5,11 @@ d (see http://ddionrails.org/stata/)
 d
 d Requires: Stata version 13 or newer
 d
-d Distribution-Date: 20160512
+d Distribution-Date: 20160523
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+* 20160523 version 0.6 23 May 2016 - soepgenpre: introduce option rsync
 * 20160512 version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
 * 20160421 version 0.4 21 April 2016 - use soepidvars in soepusemerge to detect keyvars
 * 20160420 version 0.3 18 April 2016 - initial release of soepidvars

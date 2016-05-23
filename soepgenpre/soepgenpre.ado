@@ -19,12 +19,13 @@
 -------------------------------------------------------------------------------*/
 *! soepgenpre.ado: Consolidate files from three sources (consolidated, partial, complete)
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+* 20160523 version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
 * 20160512 version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
 * 20160418 version 0.2 18 April 2016 - introduce soepgenpre
 
 program define soepgenpre, nclass
 	version 13 
-	syntax , version(string) [humepath(string) verbose empty replace dopartial docomplete]
+	syntax , version(string) [humepath(string) verbose empty replace dopartial docomplete rsync]
 if "`verbose'"=="verbose" {
 	display `"version:`version':"'
 	display `"humepathpre:`humepath':"'
@@ -134,7 +135,12 @@ while `number' > 0 {
 		if "`verbose'"=="verbose" {
 			display "`file' is complete: copy from complete"
 		}
-		copy "`complete'`file'.dta" "`pre'`file'.dta", `replace'
+		if "`rsync'"=="rsync" {
+			shell  rsync -a "`complete'`file'.dta" "`pre'`file'.dta"
+		}
+		else {
+			copy "`complete'`file'.dta" "`pre'`file'.dta", `replace'
+		}
 	}
 	if "`filestatus'" == "partial" & "`docomplete'"=="" {
 		if "`verbose'"=="verbose" {
@@ -149,7 +155,12 @@ while `number' > 0 {
 		if "`verbose'"=="verbose" {
 			display "`file' is only in consolidated: copy from consolidated"
 		}
-		copy "`consolidated'`file'.dta" "`pre'`file'.dta", `replace'
+		if "`rsync'"=="rsync" {
+			shell rsync -a "`consolidated'`file'.dta" "`pre'`file'.dta"
+		}
+		else {
+			copy "`consolidated'`file'.dta" "`pre'`file'.dta", `replace'
+		}			
 	}
 	local allfiles : subinstr local allfiles "`file'" "", all word
 	local number : word count `allfiles'
@@ -157,76 +168,3 @@ while `number' > 0 {
 
 
 end
-
-/*
-
-
-* local partials: alle partials_blabla.dta, für die es ein update gibt
-
-local partialnames : dir "`partial'" files "*_*.dta"
-display `"`partials'"'
-foreach partial of local partialnames {
-	display `"`partial'"'
-	gettoken addroot rest : partial, parse("_") quotes
-    display "`addroot'"
-	local root = "`root' `addroot'"
-	}
-display "root: `root'"
-*local test : subinstr local root "`firstroot`" "", all word
-
-local number : word count `root'
-display "number: `number'"
-
-while `number' > 0 {
-	local firstroot : word 1 of `root'
-	display "firstroot:`firstroot'"
-	local partials = `"`partials' `firstroot'"'
-	display "partial:`partials'"
-	local root : subinstr local root "`firstroot'" "", all word
-	display "root:`root':"
-	local number : word count `root'
-	display "number: `number'"
-}
-display "partials:`partials'"
-
-* local consolidateds: alle files in consolidated
-local consolidateds : dir "`consolidated'" files "*.dta"
-local consolidateds : subinstr local consolidateds ".dta" "", all
-local consolidateds : subinstr local consolidateds `"""' "", all
-display `"`consolidateds'"'
-
-* local complete: alle files in complete
-local completes : dir "`complete'" files "*.dta"
-local completes : subinstr local completes ".dta" "", all
-local completes : subinstr local completes `"""' "", all
-display `"`completes'"'
-
-local allfiles = `"`completes' `partials' `consolidateds'"'
-display `"`allfiles'"'
-	
-local number : word count `allfiles'
-display "number: `number'"
-
-while `number' > 0 {
-	local file : word 1 of `allfiles'
-	local filestatus "consolidated"
-	foreach check of local partials {
-		if "`check'" == "`file'" local filestatus "partial"
-	}
-	foreach check of local completes {
-		if "`check'" == "`file'" local filestatus "complete"
-	}
-	if "`filestatus'" == "complete" {
-		display "`file' is complete: copy from complete"
-	}
-	if "`filestatus'" == "partial" {
-		display "`file' is partial: merge with related files"
-	}
-	if "`filestatus'" == "consolidated" {
-		display "`file' is only in consolidated: copy from consolidated"
-	}
-	local allfiles : subinstr local allfiles "`file'" "", all word
-	local number : word count `allfiles'
-}
-
-*/
