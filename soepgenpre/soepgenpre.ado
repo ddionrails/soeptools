@@ -64,7 +64,7 @@ if "`empty'"=="empty" {
 }
 
 
-* local partials: alle partials_blabla.dta, für die es ein update gibt
+* local partials: alle partials_blabla.dta, fÃ¼r die es ein update gibt
 
 local partialnames : dir "`partial'" files "*_*.dta"
 if "`verbose'"=="verbose" {
@@ -136,7 +136,7 @@ while `number' > 0 {
 			display "`file' is complete: copy from complete"
 		}
 		if "`rsync'"=="rsync" {
-			shell  rsync -a "`complete'`file'.dta" "`pre'`file'.dta"
+			qui shell  rsync -a "`complete'`file'.dta" "`pre'`file'.dta"
 		}
 		else {
 			copy "`complete'`file'.dta" "`pre'`file'.dta", `replace'
@@ -156,7 +156,7 @@ while `number' > 0 {
 			display "`file' is only in consolidated: copy from consolidated"
 		}
 		if "`rsync'"=="rsync" {
-			shell rsync -a "`consolidated'`file'.dta" "`pre'`file'.dta"
+			qui shell rsync -a "`consolidated'`file'.dta" "`pre'`file'.dta"
 		}
 		else {
 			copy "`consolidated'`file'.dta" "`pre'`file'.dta", `replace'
