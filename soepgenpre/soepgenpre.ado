@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepgenpre.ado: Consolidate files from three sources (consolidated, partial, complete)
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+* 20160530 version 0.6.1 30 May 2016 - soepgenpre: add quiety prior rsync
 * 20160523 version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
 * 20160512 version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
 * 20160418 version 0.2 18 April 2016 - introduce soepgenpre
