@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepgenpre.ado: Consolidate files from three sources (consolidated, partial, complete)
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+* 20160617 version 0.7 17 June 2016 - soepgenpre: underscore in filenames #6
 * 20160530 version 0.6.1 30 May 2016 - soepgenpre: add quiety prior rsync
 * 20160523 version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
 * 20160512 version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
@@ -65,18 +66,31 @@ if "`empty'"=="empty" {
 }
 
 
-* local partials: alle partials_blabla.dta, für die es ein update gibt
+* START: local partials: all partials_blabla.dta, with updates
 
 local partialnames : dir "`partial'" files "*_*.dta"
 if "`verbose'"=="verbose" {
 	display `"files in partial: `partialnames'"'
 }
+* all root file names (parts before last underscore) in partial folder
 foreach file of local partialnames {
-	* display `"`partial'"'
-	gettoken addroot rest : file, parse("_") quotes
-    * display "`addroot'"
+	local addroot = ""
+	local left = ""
+	while "`file'" != "" {
+		local addroot = "`addroot'`left'"
+		gettoken left file : file, parse("_") quotes
+		* display "left: `left'"
+		gettoken nextleft rest : file, parse("_") quotes
+		if "`rest'"=="" local file = ""
+		* display "nextleft: `nextleft'"
+		* display "rest: `rest'"
+		* display "addroot: `addroot'"
+		* display "file: |`file'|"
+	}
 	local root = "`root' `addroot'"
+	* display "root: `root'"
 }
+
 /*
 if "`verbose'"=="verbose" {
 	display "root files in partial: `root'"
@@ -87,6 +101,7 @@ if "`verbose'"=="verbose" {
 local number : word count `root'
 * display "number: `number'"
 
+* make root file names found in partial folder unique
 while `number' > 0 {
 	local firstroot : word 1 of `root'
 	* display "firstroot:`firstroot'"
@@ -100,13 +115,14 @@ while `number' > 0 {
 if "`verbose'"=="verbose" {
 	display "unique file roots in partial:`partials'"
 }
+* END: local partials: all partials_blabla.dta, with updates
 
 * local consolidateds: alle files in consolidated
 local consolidateds : dir "`consolidated'" files "*.dta"
 local consolidateds : subinstr local consolidateds ".dta" "", all
 local consolidateds : subinstr local consolidateds `"""' "", all
 if "`verbose'"=="verbose" {
-	display `"files in colsolidated: `consolidateds'"'
+	display `"files in consolidated: `consolidateds'"'
 }
 
 * local complete: alle files in complete
