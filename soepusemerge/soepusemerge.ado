@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! 20160620 version 0.8 20 June 2016 - soepgenpre: allow for string variables, bugfixes
 *! version 0.1 13 April 2016 - initial release
 
 program define soepusemerge , nclass
@@ -104,15 +105,21 @@ foreach fileno of numlist 1/`filescount' {
 	quietly save `mergefile`fileno'', replace
 	quietly ds
 	local varlist = r(varlist)
-	* display "`varlist'"
+	if "`verbose'"=="verbose" {
+		display "Variables in file: `varlist'"
+	}
 	local file`fileno'_newvars = "`varlist'"
-	* display "`file`fileno'_newvars'"
-	
+	local varlist = r(varlist)
+	if "`verbose'"=="verbose" {
+		display "List of variables to be reduced: `file`fileno'_newvars'"
+	}
 	foreach var of local keyvars {
 		* display "`var'"
 		local file`fileno'_newvars : subinstr local file`fileno'_newvars "`var'" ""
 	}
-	* display "`file`fileno'_newvars'"
+	if "`verbose'"=="verbose" {
+		display "Variables to be added: `file`fileno'_newvars'"
+	}
 	
 	local file`fileno'_status OK
 	capture merge 1:1 `keyvars' using `allrows', assert(match) nogen
@@ -123,27 +130,53 @@ foreach fileno of numlist 1/`filescount' {
 		foreach var of local file`fileno'_newvars {
 			* display "usevars: `file`fileno'_usevars'"
 			* display "var: `var'"
-			quietly count if `var'==.
-			if `r(N)'==0 {
-				* display "Variable `var' has no missings."
+			capture confirm string variable `var'
+            if !_rc {
 				local foundvar ""
 				foreach mvar of local mastervars {
-					if "`mvar'"=="`var'" local foundvar = `var'					
+					*display "mvar: ::`mvar'::"
+					if "`mvar'"=="`var'" local foundvar = "`var'"
+					*display "var: ::`var'::"
+					*display "foundvar: ::`foundvar'::"
 				}
 				if "`foundvar'"!="" {					
 					local file`fileno'_usevars = `"`file`fileno'_usevars' `var'"'
 					if "`verbose'"=="verbose" {
-						display "Variable `var' has no missings and is used."
+						display "Variable `var' is string and is used without more validations."
 					}
 				}
 				else {
-				    local file`fileno'_notusevars = `"`file`fileno'_notusevars' `var'"'
-					local file`fileno'_status "some variable(s) NOT used: new or with missing"
+					local file`fileno'_notusevars = `"`file`fileno'_notusevars' `var'"'
+					local file`fileno'_status "some variable(s) NOT used: new string"
+					if "`verbose'"=="verbose" {
+						display "Variable `var' is string, new and NOT used."
+					}
 				}
-			}
-			else {
-				local file`fileno'_notusevars = `"`file`fileno'_notusevars' `var'"'
-				local file`fileno'_status "some variable(s) NOT used: new or with missing"				
+            }
+            else {
+				* action for numeric variables 
+				quietly count if `var'==.
+				if `r(N)'==0 {
+					* display "Variable `var' has no missings."
+					local foundvar ""
+					foreach mvar of local mastervars {
+						if "`mvar'"=="`var'" local foundvar = "`var'"					
+					}
+					if "`foundvar'"!="" {					
+						local file`fileno'_usevars = `"`file`fileno'_usevars' `var'"'
+						if "`verbose'"=="verbose" {
+							display "Variable `var' has no missings and is used."
+						}
+					}
+					else {
+						local file`fileno'_notusevars = `"`file`fileno'_notusevars' `var'"'
+						local file`fileno'_status "some variable(s) NOT used: new or with missing"
+					}
+				}
+				else {
+					local file`fileno'_notusevars = `"`file`fileno'_notusevars' `var'"'
+					local file`fileno'_status "some variable(s) NOT used: new or with missing"				
+				}
 			}
 		}
 	}
@@ -155,7 +188,7 @@ foreach fileno of numlist 1/`filescount' {
 }
 
 
-* delete existing values (set to .) and merge
+* delete existing values (set to . or "") and merge
 quietly use `usefile', clear
 foreach fileno of numlist 1/`filescount' {
 	local file : word `fileno' of `mergefiles'
@@ -166,8 +199,16 @@ foreach fileno of numlist 1/`filescount' {
 	}
 	else {
 		foreach var of varlist `file`fileno'_usevars' {
-			quietly replace `var'=.
-			* display "Set `var' (in master) to . (missing)."
+			capture confirm string variable `var'
+            if !_rc {
+				*action for string variables
+				quietly replace `var'=""
+            }
+            else {
+				*action for numeric variables 
+				quietly replace `var'=.
+				* display "Set `var' (in master) to . (missing)."
+			}
 		}
 		display "Updated variable(s): `file`fileno'_usevars'."
 		if "`file`fileno'_notusevars'"!="" {
@@ -180,15 +221,10 @@ foreach fileno of numlist 1/`filescount' {
 		*restore
 		*desc
 		quietly merge 1:1 `keyvars' using `mergefile`fileno'', ///
-			keepusing(`file`fileno'_usevars') assert(match_update) update nogen
-		}
+			keepusing(`file`fileno'_usevars') ///
+			assert(match match_update) update nogen
+	}
 }
 display "Merged by variable(s): `keyvars'"
-display 
 
 end
-/*-------------------------------------------------------------------------------
-
-
-
--------------------------------------------------------------------------------*/
