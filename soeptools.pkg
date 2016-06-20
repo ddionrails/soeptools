@@ -9,7 +9,7 @@ d Distribution-Date: 20160620
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
-* 20160620 version 0.8 20 June 2016 - soepgenpre: allow for string variables, bugfixes
+* 20160620 version 0.8 20 June 2016 - soepusemerge: allow for string variables, bugfixes
 * 20160617 version 0.7 17 June 2016 - soepgenpre: underscore in filenames #6
 * 20160530 version 0.6.1 30 May 2016 - soepgenpre: add quiety prior rsync
 * 20160523 version 0.6 23 May 2016 - soepgenpre: introduce option rsync
