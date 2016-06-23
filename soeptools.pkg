@@ -1,14 +1,15 @@
 d soeptools
 d
 d text 
-d (see http://ddionrails.org/stata/) 
+d (see http://ddionrails.org/soeptools/) 
 d
 d Requires: Stata version 13 or newer
 d
-d Distribution-Date: 20160620
+d Distribution-Date: 20160623
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+* 20160623 version 0.9 23 June 2016 - introduce soepisclass.ado
 * 20160620 version 0.8 20 June 2016 - soepusemerge: allow for string variables, bugfixes
 * 20160617 version 0.7 17 June 2016 - soepgenpre: underscore in filenames #6
 * 20160530 version 0.6.1 30 May 2016 - soepgenpre: add quiety prior rsync
