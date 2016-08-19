@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------
-  soepfitsclass.ado: Checks whether a variable fits to classification
+  soepmergeclass.ado: merges value_templates to a variable
     Copyright (C) 2016  Knut Wenzig (kwenzig@diw.de)
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,14 +12,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------*/
-*! soepfitsclass.ado: Checks whether a variable fits to classification
+*! soepmergeclass.ado: merges value_templates to a variable
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
 *! 20160623 version 0.9 23 June 2016 - introduce soepfitsclass.ado
 *! version 0.9 23 June 2016 - introduce soepfitsclass.ado
 
-program define soepfitsclass, rclass
+program define soepmergeclass, rclass
 	version 13
-syntax varname [using/] , id(string) [verbose force]
+syntax varname [using/] , id(string) [verbose force utf2cp language(string)]
 
 *debug
 *local varlist "v_kldb2010raw"
@@ -28,26 +28,51 @@ syntax varname [using/] , id(string) [verbose force]
 tempfile myfile
 quietly save `myfile', replace
 
-tempfile file
-keep `varlist'
-quietly save `file', replace
+if "`using'"=="" local using "https://gitlab.soep.de/kwenzig/additionalmetadata/raw/master/templates/"
 
-if "`using'"=="" local using "D:/lokal/additionalmetadata/templates/"
+if "`utf2cp'"=="utf2cp"{
+	soeputf2cp using "`using'/values_templates.csv", topath(tmpdir) copy verbose
+	return list
+	local using = r(path)
+}
 
 quietly import delimited "`using'values_templates.csv", delimiter(comma) varnames(1) ///
 	numericcols(1 2 3) stringcols (4 5 6) clear
 
+if "`language'"	== "de" {
+	local language_suffix _de
+} 
+else if "`language'" == "en" {
+	local language_suffix
+} 
+else {
+	local language_suffix _de
+}
+
 quietly keep if inlist(id,`id')
-keep value label_de
+rename label`language_suffix' _label
+rename value _value
+keep _value _label
+isid _value
 
 tempfile thisclass
 quietly save `thisclass', replace // tempfile mit zulässigen Angaben
 
 * Überprüfung, ob nur zulässige Angaben angenommen werden
-quietly use `file', clear
-rename `varlist' value
-* Werte müssen entweder vorhanden sein (match) oder dürfen nur in der Klassifikation sein (using)
-quietly capture merge m:1 value using `thisclass', keep(master match) assert(match using)
+quietly use `myfile', clear
+tempvar `value'
+generate _value = `varlist'
+
+* 
+merge m:1 _value using `thisclass'
+rename _merge _inclass
+label define _inclass 1 "value only used in data" ///
+                      2 "value only used in classification" ///
+					  3 "value used in data and classification", replace
+label values _inclass _inclass 
+
+end
+/*
 local rc = _rc
 if `rc' == 0 {
 	display "All values fit classification."
@@ -75,3 +100,4 @@ else {
 	if "`force'"=="force" quietly use `myfile', clear
 }
 end	
+*/
