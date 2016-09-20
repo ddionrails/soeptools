@@ -9,6 +9,7 @@ d Distribution-Date: 20160623
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+* 20160920 version 0.10 20 September 2016 - introduce soepdropchar.ado
 * 20160623 version 0.9 23 June 2016 - introduce soepisclass.ado
 * 20160620 version 0.8 20 June 2016 - soepusemerge: allow for string variables, bugfixes
 * 20160617 version 0.7 17 June 2016 - soepgenpre: underscore in filenames #6
@@ -20,6 +21,8 @@ d Support: kwenzig@diw.de
 * 20160418 version 0.2 18 April 2016 - introduce soepgenpre
 * 20160413 version 0.1 13 April 2016 - initial release
 
+f soepdropchar/soepdropchar.ado
+f soepdropchar/soepdropchar.shtml
 f soepidvars/soepidvars.ado
 f soepidvars/soepidvars.sthlp
 f soepgenpre/soepgenpre.ado

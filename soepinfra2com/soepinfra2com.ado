@@ -26,7 +26,6 @@ program define soepinfra2com , nclass
 	version 13
 	syntax varname
 
-local varlist pber_isco88raw
 capture drop `varlist'_com88
 generate `varlist'_com88 = string(`varlist') if `varlist'>0 & `varlist'<9900 & `varlist'!=110
 replace `varlist'_com88 = `varlist'_com88 + (4-length(`varlist'_com88))*"0" if `varlist'_com88!=""

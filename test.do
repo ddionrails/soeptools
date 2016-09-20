@@ -139,3 +139,9 @@ adopath ++ "D:/lokal/soeptools/soepkldb92mps"
 
 discard
 adopath ++ "D:/lokal/soeptools/soepdropchar"
+
+discard
+adopath ++ "D:/lokal/soeptools/soepclassinfo"
+
+discard
+adopath ++ "D:/lokal/soeptools/soepopenclass"
