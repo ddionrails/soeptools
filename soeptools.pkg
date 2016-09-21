@@ -5,7 +5,7 @@ d (see http://ddionrails.org/soeptools/)
 d
 d Requires: Stata version 13 or newer
 d
-d Distribution-Date: 20160623
+d Distribution-Date: 20160920
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
@@ -22,7 +22,7 @@ d Support: kwenzig@diw.de
 * 20160413 version 0.1 13 April 2016 - initial release
 
 f soepdropchar/soepdropchar.ado
-f soepdropchar/soepdropchar.shtml
+f soepdropchar/soepdropchar.sthlp
 f soepidvars/soepidvars.ado
 f soepidvars/soepidvars.sthlp
 f soepgenpre/soepgenpre.ado
