@@ -26,8 +26,6 @@ program define soepusemerge , nclass
 	version 13
 	syntax anything(name=pathwfile) using/ , clear [keyvars(namelist) verbose]
 
-display "check"
-	
 * check whether getfilename is installed
 quietly capture findfile getfilename2.ado
 if "`r(fn)'" == "" {
@@ -124,11 +122,8 @@ foreach fileno of numlist 1/`filescount' {
 	}
 	
 	local file`fileno'_status OK
-	display "CHECK NOW: `keyvars'"
 	foreach keyvar of local keyvars {
-		display "CHECK: `keyvar'"
 		local type : type `keyvar'
-		display "TYP: `type'"
 		if "`type'"!="long" {
 			local file`fileno'_status "NO, not all keyvars with type long"		
 		}
