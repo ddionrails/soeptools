@@ -1,6 +1,6 @@
 {smcl}
-{* *! version 0.4 20 April 2016}{...}
-help for {cmd:soepusemerge}{right:version 0.4  (20 April 2016)}
+{* *! version 0.11 27 September 2016}{...}
+help for {cmd:soepusemerge}{right:version 0.11  (27 September 2016)}
 {hline}
 
 
@@ -30,7 +30,7 @@ help for {cmd:soepusemerge}{right:version 0.4  (20 April 2016)}
 {title:Description}
 
 {pstd}
-{cmd:soepusemerge} opens dataset {help filename:{it:filename}} and merges variables from all related datasets in {it:pathname}, performing a merge 1:1 with key variables specified in the option {opt keyvars} while requiring a complete match with assert(match) and merging only variables without missings.
+{cmd:soepusemerge} opens dataset {help filename:{it:filename}} and merges variables from all related datasets in {it:pathname}, performing a merge 1:1 with key variables specified in the option {opt keyvars} while requiring (1.) {opt keyvars} of type long, (2.) a complete match with assert(match), and (3.) merging only variables without missings.
 
 {pstd}
 A related dataset must have the name of the filename plus a suffix which start with an underscore. Example: filename is root.dta, a file in {it:pathname} with name root_xy.dta would be recognized as related.

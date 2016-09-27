@@ -5,10 +5,11 @@ d (see http://ddionrails.org/soeptools/)
 d
 d Requires: Stata version 13 or newer
 d
-d Distribution-Date: 20160920
+d Distribution-Date: 20160927
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+* 20160927 version 0.11 27 September 2016 - soepusemerge: require keyvars of type long
 * 20160920 version 0.10 20 September 2016 - introduce soepdropchar.ado
 * 20160623 version 0.9 23 June 2016 - introduce soepisclass.ado
 * 20160620 version 0.8 20 June 2016 - soepusemerge: allow for string variables, bugfixes

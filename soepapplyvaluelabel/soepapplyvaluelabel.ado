@@ -17,22 +17,18 @@
 *! version 0.10 (20160808) - introduce soepapplyvaluelabel/soepfitsclass
 
 program define soepapplyvaluelabel, rclass
-	version 13
-syntax varlist [using/] , id(string) [language(string) utf2cp lblname(string)]
+	version 14
+syntax varlist [using/] , id(string) [language(string) encoding(string) lblname(string)]
 
 tempfile myfile
 quietly save `myfile', replace
 
 if "`using'"=="" local using "https://gitlab.soep.de/kwenzig/additionalmetadata/raw/master/templates/"
 
-if "`utf2cp'"=="utf2cp"{
-	soeputf2cp using "`using'/values_templates.csv", topath(tmpdir) copy verbose
-	return list
-	local using = r(path)
-}
+if "`encoding'"=="" local encoding "utf-8"
 
 quietly import delimited "`using'values_templates.csv", delimiter(comma) varnames(1) ///
-	numericcols(1 2 3) stringcols (4 5 6) clear
+	numericcols(1 2 3) stringcols (4 5 6) encoding("`encoding'") clear
 display "imported"
 
 if "`language'"	== "de" {
@@ -45,12 +41,13 @@ else {
 	local language_suffix _de
 }
 	
-	
+display "id: `id'"	
 quietly keep if inlist(id,`id')
 keep value label`language_suffix'
 isid value
 
 local rows = _N
+display "rows: `rows'"
 
 forvalues row = 1/`rows' {
 	local value_`row' = value[`row']
@@ -67,10 +64,10 @@ if "`lblname'"=="" {
 capture label drop `lblname'
 
 forvalues row = 1/`rows' {
-	label define `lblname' `value_`row'' "`label_`row''", add
+	label define `lblname' `value_`row'' "`label_`row''", add	
 }
 
 label values `varlist' `lblname'
-
+display "Variable: `varlist' labed with label `lblname'"
 return local lblname `lblname'
 end	

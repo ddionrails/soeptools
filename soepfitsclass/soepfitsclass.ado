@@ -46,18 +46,18 @@ quietly keep if inlist(id,`id')
 keep value label_de
 
 tempfile thisclass
-quietly save `thisclass', replace // tempfile mit zulässigen Angaben
+quietly save `thisclass', replace // tempfile mit zulÃ¤ssigen Angaben
 
 if "`verbose'"=="verbose" {
 	soepclassinfo using `using', id(`id')
 }
 
-* Überprüfung, ob nur zulässige Angaben angenommen werden
+* ÃœberprÃ¼fung, ob nur zulÃ¤ssige Angaben angenommen werden
 quietly use `file', clear
 rename `varlist' value
 * genutze Wertelabel anmergen
 quietly capture merge m:1 value using `usedlabel', keep(master match) nogen
-* Werte müssen entweder vorhanden sein (match) oder dürfen nur in der Klassifikation sein (using)
+* Werte mÃ¼ssen entweder vorhanden sein (match) oder dÃ¼rfen nur in der Klassifikation sein (using)
 quietly capture merge m:1 value using `thisclass', keep(master match) assert(match using)
 local rc = _rc
 if `rc' == 0 {
@@ -76,8 +76,8 @@ else {
 		exit
 	}*/
 }
-* Überprüfung, ob nur zulässige Angaben als value label definiert sind
-* Häufigkeiten (n) 
+* ÃœberprÃ¼fung, ob nur zulÃ¤ssige Angaben als value label definiert sind
+* HÃ¤ufigkeiten (n) 
 quietly use `file', clear
 rename `varlist' value
 quietly keep value
@@ -88,6 +88,12 @@ quietly save `frequencies', replace
 
 quietly use `file', clear
 local lblname : value label `varlist'
+if "`lblname'"=="" {
+	display "Variable hast no value label."
+	quietly use `myfile', clear
+	exit
+}
+
 uselabel `lblname', clear
 quietly capture merge 1:1 value using `thisclass', assert(match)
 local rc = _rc

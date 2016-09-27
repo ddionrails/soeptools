@@ -19,13 +19,15 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-*! 20160620 version 0.8 20 June 2016 - soepgenpre: allow for string variables, bugfixes
+*! version 0.11 27 September 2016 - require keyvars of type long
 *! version 0.1 13 April 2016 - initial release
 
 program define soepusemerge , nclass
 	version 13
 	syntax anything(name=pathwfile) using/ , clear [keyvars(namelist) verbose]
 
+display "check"
+	
 * check whether getfilename is installed
 quietly capture findfile getfilename2.ado
 if "`r(fn)'" == "" {
@@ -122,11 +124,22 @@ foreach fileno of numlist 1/`filescount' {
 	}
 	
 	local file`fileno'_status OK
+	display "CHECK NOW: `keyvars'"
+	foreach keyvar of local keyvars {
+		display "CHECK: `keyvar'"
+		local type : type `keyvar'
+		display "TYP: `type'"
+		if "`type'"!="long" {
+			local file`fileno'_status "NO, not all keyvars with type long"		
+		}
+	}
+	
 	capture merge 1:1 `keyvars' using `allrows', assert(match) nogen
-	if _rc != 0 {
+	if _rc != 0 & "`file`fileno'_status'"=="OK" {
 		local file`fileno'_status "NO, rows do not match"		
 	}
-	else {
+			
+	if "`file`fileno'_status'"=="OK" {
 		foreach var of local file`fileno'_newvars {
 			* display "usevars: `file`fileno'_usevars'"
 			* display "var: `var'"
@@ -181,7 +194,7 @@ foreach fileno of numlist 1/`filescount' {
 		}
 	}
 	if "`verbose'"=="verbose" {
-		display "File No `fileno', Name `file' has Status: `file`fileno'_status'."
+		display "File No `fileno', Name `file' has status: `file`fileno'_status'."
 		display "Use variables: `file`fileno'_usevars'."
 		display "Do not use variables: `file`fileno'_notusevars'."
 	}
@@ -193,7 +206,7 @@ quietly use `usefile', clear
 foreach fileno of numlist 1/`filescount' {
 	local file : word `fileno' of `mergefiles'
 	display "Related file: `file':"
-	if "`file`fileno'_usevars'"=="" | "`file`fileno'_status'"=="NO, rows do not match" {
+	if "`file`fileno'_usevars'"=="" | "`file`fileno'_status'"!="OK" {
 		display "Not merged."
 		display
 	}
