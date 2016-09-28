@@ -9,6 +9,7 @@ d Distribution-Date: 20160928
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+* version 0.13 28 September 2016 - soepusemerge: bugfix
 * version 0.12 28 September 2016 - soepusemerge: fix for keys not in partial, 
 *                                  soepidvars: ignore isid hhnr in personal files
 * version 0.11 27 September 2016 - soepusemerge: require keyvars of type long

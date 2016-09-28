@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.13 28 September 2016 - soepusemerge: bugfix
 *! version 0.12 28 September 2016 - soepusemerge: fix for keys not in partial
 *! version 0.11 27 September 2016 - require keyvars of type long
 *! version 0.1 13 April 2016 - initial release
@@ -60,17 +61,16 @@ quietly use "`filepath'/`fileroot'", clear
 quietly ds
 local mastervars = r(varlist)
 if "`verbose'"=="verbose" {
-	display "variables in master:`mastervars'"
+	display "variables in master: `mastervars'"
 }
 quietly save `usefile'
 
 * use keyvars from soepidvars, if no keyvars specified
 if `"`keyvars'"'=="" {
-	soepidvars, verbose
+	soepidvars, `verbose'
 	*local keyvars_bdpgen persnr
 	*local keyvars_bepgen persnr
 	*local keyvars = "`keyvars_`fileroot''"	
-	soepidvars, verbose
 	local keyvars = r(idvars)
 }
 if "`verbose'"=="verbose" {
@@ -111,18 +111,25 @@ foreach fileno of numlist 1/`filescount' {
 	}
 	local file`fileno'_newvars : list varlist - keyvars
 	if "`verbose'"=="verbose" {
-		display "Variables to be added: `file`fileno'_newvars'"
+		display "Variables to be checked for adding: `file`fileno'_newvars'"
 	}
 	
 	local file`fileno'_status OK
 	local file`fileno'_keyvars : list varlist & keyvars
+	if "`verbose'"=="verbose" {
+		display "Found keyvars: `file`fileno'_keyvars'"
+	}
 	
 	local file`fileno'_keyvars_check : list file`fileno'_keyvars === keyvars
 	
 	if "`file`fileno'_keyvars_check'"=="0" {
 		local file`fileno'_status "NO, containing not all keyvars"
 	}
-	
+	else {
+		if "`verbose'"=="verbose" {
+			display "All keyvars found."
+		}
+	}
 	foreach keyvar of local keyvars {
 		capture local type : type `keyvar'
 		if "`type'"!="long" & "`file`fileno'_status'"=="OK" {
@@ -199,10 +206,11 @@ foreach fileno of numlist 1/`filescount' {
 
 * delete existing values (set to . or "") and merge
 quietly use `usefile', clear
+local file`fileno'_shortstatus: word 1 of local file`fileno'_status
 foreach fileno of numlist 1/`filescount' {
 	local file : word `fileno' of `mergefiles'
 	display "Related file: `file':"
-	if "`file`fileno'_usevars'"=="" | "`file`fileno'_status'"!="OK" {
+	if "`file`fileno'_usevars'"=="" | "`file`fileno'_shortstatus'"=="No," {
 		display "Not merged."
 		display
 	}
