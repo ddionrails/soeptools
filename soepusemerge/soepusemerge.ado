@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.12 28 September 2016 - soepusemerge: fix for keys not in partial
 *! version 0.11 27 September 2016 - require keyvars of type long
 *! version 0.1 13 April 2016 - initial release
 
@@ -108,23 +109,23 @@ foreach fileno of numlist 1/`filescount' {
 	if "`verbose'"=="verbose" {
 		display "Variables in file: `varlist'"
 	}
-	local file`fileno'_newvars = "`varlist'"
-	local varlist = r(varlist)
-	if "`verbose'"=="verbose" {
-		display "List of variables to be reduced: `file`fileno'_newvars'"
-	}
-	foreach var of local keyvars {
-		* display "`var'"
-		local file`fileno'_newvars : subinstr local file`fileno'_newvars "`var'" ""
-	}
+	local file`fileno'_newvars : list varlist - keyvars
 	if "`verbose'"=="verbose" {
 		display "Variables to be added: `file`fileno'_newvars'"
 	}
 	
 	local file`fileno'_status OK
+	local file`fileno'_keyvars : list varlist & keyvars
+	
+	local file`fileno'_keyvars_check : list file`fileno'_keyvars === keyvars
+	
+	if "`file`fileno'_keyvars_check'"=="0" {
+		local file`fileno'_status "NO, containing not all keyvars"
+	}
+	
 	foreach keyvar of local keyvars {
-		local type : type `keyvar'
-		if "`type'"!="long" {
+		capture local type : type `keyvar'
+		if "`type'"!="long" & "`file`fileno'_status'"=="OK" {
 			local file`fileno'_status "NO, not all keyvars with type long"		
 		}
 	}

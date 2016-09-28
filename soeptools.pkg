@@ -5,22 +5,24 @@ d (see http://ddionrails.org/soeptools/)
 d
 d Requires: Stata version 13 or newer
 d
-d Distribution-Date: 20160927
+d Distribution-Date: 20160928
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
-* 20160927 version 0.11 27 September 2016 - soepusemerge: require keyvars of type long
-* 20160920 version 0.10 20 September 2016 - introduce soepdropchar.ado
-* 20160623 version 0.9 23 June 2016 - introduce soepisclass.ado
-* 20160620 version 0.8 20 June 2016 - soepusemerge: allow for string variables, bugfixes
-* 20160617 version 0.7 17 June 2016 - soepgenpre: underscore in filenames #6
-* 20160530 version 0.6.1 30 May 2016 - soepgenpre: add quiety prior rsync
-* 20160523 version 0.6 23 May 2016 - soepgenpre: introduce option rsync
-* 20160512 version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
-* 20160421 version 0.4 21 April 2016 - use soepidvars in soepusemerge to detect keyvars
-* 20160420 version 0.3 18 April 2016 - initial release of soepidvars
-* 20160418 version 0.2 18 April 2016 - introduce soepgenpre
-* 20160413 version 0.1 13 April 2016 - initial release
+* version 0.12 28 September 2016 - soepusemerge: fix for keys not in partial, 
+*                                  soepidvars: ignore isid hhnr in personal files
+* version 0.11 27 September 2016 - soepusemerge: require keyvars of type long
+* version 0.10 20 September 2016 - introduce soepdropchar.ado
+* version 0.9 23 June 2016 - introduce soepisclass.ado
+* version 0.8 20 June 2016 - soepusemerge: allow for string variables, bugfixes
+* version 0.7 17 June 2016 - soepgenpre: underscore in filenames #6
+* version 0.6.1 30 May 2016 - soepgenpre: add quiety prior rsync
+* version 0.6 23 May 2016 - soepgenpre: introduce option rsync
+* version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
+* version 0.4 21 April 2016 - use soepidvars in soepusemerge to detect keyvars
+* version 0.3 18 April 2016 - initial release of soepidvars
+* version 0.2 18 April 2016 - introduce soepgenpre
+* version 0.1 13 April 2016 - initial release
 
 f soepdropchar/soepdropchar.ado
 f soepdropchar/soepdropchar.sthlp

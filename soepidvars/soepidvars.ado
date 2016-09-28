@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepidvars.ado: varlist which uniquely identify oberservations
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.12 28 September 2016 - soepidvars: ignore isid hhnr in personal files
 *! version 0.3 19 April 2016 - initial release
 
 program define soepidvars, rclass
