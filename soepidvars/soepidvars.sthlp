@@ -1,8 +1,7 @@
 {smcl}
-{* *! version 0.12 28 September 2016}{...}
-help for {cmd:soepidvars}{right:version 0.12  (28 September 2016)}
+{* *! version 0.14 29 September 2016}{...}
+help for {cmd:soepidvars}{right:version 0.14  (29 September 2016)}
 {hline}
-
 
 {title:Title}
 
