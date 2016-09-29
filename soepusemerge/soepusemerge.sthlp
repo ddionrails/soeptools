@@ -1,8 +1,7 @@
 {smcl}
-{* *! version 0.13 28 September 2016}{...}
-help for {cmd:soepusemerge}{right:version 0.13  (28 September 2016)}
+{* *! version 0.15 29 September 2016}{...}
+help for {cmd:soepusemerge}{right:version 0.15 29 September 2016}
 {hline}
-
 
 {title:Title}
 
@@ -34,6 +33,10 @@ help for {cmd:soepusemerge}{right:version 0.13  (28 September 2016)}
 
 {pstd}
 A related dataset must have the name of the filename plus a suffix which start with an underscore. Example: filename is root.dta, a file in {it:pathname} with name root_xy.dta would be recognized as related.
+{p_end}
+
+{pstd}
+Results can be inspected with {help return:ereturn list}.
 {p_end}
 
 

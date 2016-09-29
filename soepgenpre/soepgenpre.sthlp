@@ -1,6 +1,6 @@
 {smcl}
-{* *! version 0.6 23 May 2016}{...}
-help for {cmd:soepgenpre}{right:version 0.6  (23 May 2016}
+{* *! version 0.15 29 September 2016}{...}
+help for {cmd:soepgenpre}{right:version 0.15  (29 September 2016}
 {hline}
 
 
@@ -40,7 +40,7 @@ help for {cmd:soepgenpre}{right:version 0.6  (23 May 2016}
 1. If a file found in complete, this file will be copied to the pre-folder.
 
 {pstd}
-2. For all dta-files found in partial, all of root filenames will be processed with {help soepusemerge:{it:soepusemerge}}, if not already processed in step 1. The result will be saved to the pre-folder.
+2. For all dta-files found in partial, all of root filenames will be processed with {help soepusemerge:{it:soepusemerge}}, if not already processed in step 1. The result will be saved to the pre-folder. An Excel file partialresults.xls in the pre-folder shows the executed operations.
 
 {pstd}
 3. If a dta-file can be exclusively found in consolidated (and this name is not a root file name in step 2), this file will be coppied to the pre-folder.

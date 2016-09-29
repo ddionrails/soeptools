@@ -19,11 +19,12 @@
 -------------------------------------------------------------------------------*/
 *! soepgenpre.ado: Consolidate files from three sources (consolidated, partial, complete)
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-* 20160617 version 0.7 17 June 2016 - soepgenpre: underscore in filenames #6
-* 20160530 version 0.6.1 30 May 2016 - soepgenpre: add quiety prior rsync
-* 20160523 version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
-* 20160512 version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
-* 20160418 version 0.2 18 April 2016 - introduce soepgenpre
+*! version 0.15 29 September 2016 - soepgenpre/soepusemerge: report in partialresult.xls
+*! version 0.7 17 June 2016 - soepgenpre: underscore in filenames #6
+*! version 0.6.1 30 May 2016 - soepgenpre: add quiety prior rsync
+*! version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
+*! version 0.5 12 May 2016 - soepgenpre: introduce options dopartial and docomplete
+*! version 0.2 18 April 2016 - introduce soepgenpre
 
 program define soepgenpre, nclass
 	version 13 
@@ -139,6 +140,17 @@ local allfiles = `"`completes' `partials' `consolidateds'"'
 local number : word count `allfiles'
 * display "number: `number'"
 
+* init tempfile partialresults
+clear
+tempfile partialresults
+gen consolidated=""
+gen keyvars=""
+gen partial=""
+gen partialstatus=""
+gen partialused=""
+gen partialnotused=""
+save `partialresults', replace emptyok
+
 while `number' > 0 {
 	local file : word 1 of `allfiles'
 	local filestatus "consolidated"
@@ -167,6 +179,25 @@ while `number' > 0 {
 		* display "using:`partial':"
 		quietly: soepusemerge "`consolidated'`file'.dta" using "`partial'", clear `verbose'
 		saveold "`pre'`file'", `replace'
+		use `partialresults', clear
+		keep if consolidated==""
+		if `e(usingfilesno)'>0 {
+			set obs `e(usingfilesno)'
+			replace keyvars="`e(masterkeyvars)'"
+			replace consolidated="`e(masterfile)'"
+		}
+
+		forvalues no = 1/`e(usingfilesno)' {
+			local partialfile: word `no' of "`e(usingfiles)'"
+			replace partial       ="`partialfile'"               in `no'
+			replace partialstatus ="`e(file`no'status)'"     in `no'
+			capture replace partialused   ="`e(file`no'usevars)'"    in `no'
+			capture replace partialnotused="`e(file`no'notusevars)'" in `no'
+		}
+
+		append using `partialresults'
+		save `partialresults', replace emptyok
+		
 	}
 	if "`filestatus'" == "consolidated" & "`docomplete'"=="" & "`dopartial'"=="" {
 		if "`verbose'"=="verbose" {
@@ -182,6 +213,7 @@ while `number' > 0 {
 	local allfiles : subinstr local allfiles "`file'" "", all word
 	local number : word count `allfiles'
 }
-
+use `partialresults'
+export excel using "`pre'/partialresults.xls", firstrow(variables) replace
 
 end

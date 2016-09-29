@@ -19,12 +19,13 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.15 29 September 2016 - soepgenpre/soepusemerge: report in partialresult.xls
 *! version 0.13 28 September 2016 - soepusemerge: bugfix
 *! version 0.12 28 September 2016 - soepusemerge: fix for keys not in partial
 *! version 0.11 27 September 2016 - require keyvars of type long
 *! version 0.1 13 April 2016 - initial release
 
-program define soepusemerge , nclass
+program define soepusemerge , eclass
 	version 13
 	syntax anything(name=pathwfile) using/ , clear [keyvars(namelist) verbose]
 
@@ -56,6 +57,7 @@ local filepath = r(path)
 if "`verbose'"=="verbose" {
 	display "fileroot from getfilename2:`fileroot'"
 }
+ereturn local masterfile `fileroot'
 tempfile usefile
 quietly use "`filepath'/`fileroot'", clear
 quietly ds
@@ -76,7 +78,7 @@ if `"`keyvars'"'=="" {
 if "`verbose'"=="verbose" {
 	display "used keyvars: `keyvars'"
 }
-
+ereturn local masterkeyvars `keyvars'
 * generate tempfile allrows with all rows
 keep `keyvars'
 tempfile allrows
@@ -85,16 +87,16 @@ if "`verbose'"=="verbose" {
 	display "describe dataset with all rows"
 	desc
 }
-
 local mergefiles : dir "`using'" files "`fileroot'_*.dta"
 if "`verbose'"=="verbose" {
 	display `"Files to merge: `mergefiles'"'
 }
+ereturn local usingfiles `mergefiles'
 local filescount : word count `mergefiles'
 if "`verbose'"=="verbose" {
 	display "Number of files to merge `filescount'"
 }
-
+ereturn local usingfilesno `filescount'
 * set trace off
 foreach fileno of numlist 1/`filescount' {
 	local file : word `fileno' of `mergefiles'
@@ -241,7 +243,12 @@ foreach fileno of numlist 1/`filescount' {
 			keepusing(`file`fileno'_usevars') ///
 			assert(match match_update) update nogen
 	}
+ereturn local file`fileno'status `file`fileno'_status'
+ereturn local file`fileno'usevars `file`fileno'_usevars'
+ereturn local file`fileno'notusevars `file`fileno'_notusevars'
+
 }
 display "Merged by variable(s): `keyvars'"
+
 
 end
