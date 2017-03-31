@@ -28,12 +28,15 @@ d Support: kwenzig@diw.de
 * version 0.2 18 April 2016 - introduce soepgenpre
 * version 0.1 13 April 2016 - initial release
 
+f soepallcons/soepallcons.ado
+f soepcomparelabel/soepcomparelabel.ado
 f soepdropchar/soepdropchar.ado
 f soepdropchar/soepdropchar.sthlp
 f soepidvars/soepidvars.ado
 f soepidvars/soepidvars.sthlp
 f soepgenpre/soepgenpre.ado
 f soepgenpre/soepgenpre.sthlp
+f soepnextcons/soepnextcons.ado
 f soepusemerge/soepusemerge.ado
 f soepusemerge/soepusemerge.sthlp
 f soeptools/gnugpl.sthlp
