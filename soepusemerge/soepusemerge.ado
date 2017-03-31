@@ -1,7 +1,7 @@
 /*-------------------------------------------------------------------------------
   soepusemerge.ado: Open a template file and integrate variables from related files
 
-    Copyright (C) 2016  Knut Wenzig (kwenzig@diw.de)
+    Copyright (C) 2016-2017  Knut Wenzig (kwenzig@diw.de)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.2 31 Maerz 2017 - recstructed log in partialresult.xls
 *! version 0.15 29 September 2016 - soepgenpre/soepusemerge: report in partialresult.xls
 *! version 0.13 28 September 2016 - soepusemerge: bugfix
 *! version 0.12 28 September 2016 - soepusemerge: fix for keys not in partial
@@ -27,7 +28,7 @@
 
 program define soepusemerge , eclass
 	version 13
-	syntax anything(name=pathwfile) using/ , clear [keyvars(namelist) verbose]
+	syntax anything(name=pathwfile) using/ , clear [keyvars(namelist) verbose compare]
 
 * check whether getfilename is installed
 quietly capture findfile getfilename2.ado
@@ -117,6 +118,8 @@ foreach fileno of numlist 1/`filescount' {
 	}
 	
 	local file`fileno'_status OK
+	local file`fileno'_message
+	local file`fileno'_navarlist
 	local file`fileno'_keyvars : list varlist & keyvars
 	if "`verbose'"=="verbose" {
 		display "Found keyvars: `file`fileno'_keyvars'"
@@ -126,22 +129,30 @@ foreach fileno of numlist 1/`filescount' {
 	
 	if "`file`fileno'_keyvars_check'"=="0" {
 		local file`fileno'_status "NO, containing not all keyvars"
+		local file`fileno'_status "ERROR"
+		local file`fileno'_message "`file`fileno'_message' Keyvar(s) missing."
+		local file`fileno'_withoutkey : list keyvars - file`fileno'_keyvars
 	}
 	else {
 		if "`verbose'"=="verbose" {
 			display "All keyvars found."
 		}
 	}
-	foreach keyvar of local keyvars {
-		capture local type : type `keyvar'
-		if "`type'"!="long" & "`file`fileno'_status'"=="OK" {
-			local file`fileno'_status "NO, not all keyvars with type long"		
-		}
+	local typecheck
+	foreach keyvar of local file`fileno'_keyvars {
+		local type : type `keyvar'
+		local typecheck "`typecheck' `type'"
+	}
+	local typecheck : list uniq typecheck
+	if "`typecheck'"!="long" {
+			local file`fileno'_status "ERROR"
+			local file`fileno'_message "`file`fileno'_message' Keyvar(s) not long."
 	}
 	
 	capture merge 1:1 `keyvars' using `allrows', assert(match) nogen
 	if _rc != 0 & "`file`fileno'_status'"=="OK" {
-		local file`fileno'_status "NO, rows do not match"		
+		local file`fileno'_status "ERROR"
+		local file`fileno'_message "`file`fileno'_message' Rows do not match."		
 	}
 			
 	if "`file`fileno'_status'"=="OK" {
@@ -165,7 +176,8 @@ foreach fileno of numlist 1/`filescount' {
 				}
 				else {
 					local file`fileno'_notusevars = `"`file`fileno'_notusevars' `var'"'
-					local file`fileno'_status "some variable(s) NOT used: new string"
+					local file`fileno'_status "Warning"
+					local file`fileno'_message "`file`fileno'_message' Some variable(s) NOT used: new string."
 					if "`verbose'"=="verbose" {
 						display "Variable `var' is string, new and NOT used."
 					}
@@ -173,34 +185,36 @@ foreach fileno of numlist 1/`filescount' {
             }
             else {
 				* action for numeric variables 
-				quietly count if `var'==.
-				if `r(N)'==0 {
-					* display "Variable `var' has no missings."
-					local foundvar ""
-					foreach mvar of local mastervars {
-						if "`mvar'"=="`var'" local foundvar = "`var'"					
-					}
-					if "`foundvar'"!="" {					
+				local found : list var in mastervars
+				if `found'==1 {
+					quietly count if `var'==.
+					if `r(N)'==0 {
+						* display "Variable `var' has no missings."
 						local file`fileno'_usevars = `"`file`fileno'_usevars' `var'"'
 						if "`verbose'"=="verbose" {
 							display "Variable `var' has no missings and is used."
 						}
 					}
 					else {
-						local file`fileno'_notusevars = `"`file`fileno'_notusevars' `var'"'
-						local file`fileno'_status "some variable(s) NOT used: new or with missing"
+						local file`fileno'_usevars = `"`file`fileno'_usevars' `var'"'
+						local file`fileno'_navarlist = `"`file`fileno'_navarlist' `var'"'
+						local file`fileno'_status "Warning"
+						local file`fileno'_message "`file`fileno'_message' Variable(s) containing NAs."
 					}
 				}
 				else {
 					local file`fileno'_notusevars = `"`file`fileno'_notusevars' `var'"'
-					local file`fileno'_status "some variable(s) NOT used: new or with missing"				
+					local file`fileno'_status "Warning"
+					local file`fileno'_message "`file`fileno'_message' Superflous variable(s) dropped."
 				}
 			}
 		}
 	}
 	if "`verbose'"=="verbose" {
 		display "File No `fileno', Name `file' has status: `file`fileno'_status'."
+		display "Info: `file`fileno'_message'"
 		display "Use variables: `file`fileno'_usevars'."
+		display "Variables with NA (used): `file`fileno'_navarlist'."
 		display "Do not use variables: `file`fileno'_notusevars'."
 	}
 }
@@ -208,13 +222,11 @@ foreach fileno of numlist 1/`filescount' {
 
 * delete existing values (set to . or "") and merge
 quietly use `usefile', clear
-local file`fileno'_shortstatus: word 1 of local file`fileno'_status
 foreach fileno of numlist 1/`filescount' {
 	local file : word `fileno' of `mergefiles'
 	display "Related file: `file':"
-	if "`file`fileno'_usevars'"=="" | "`file`fileno'_shortstatus'"=="No," {
-		display "Not merged."
-		display
+	if "`file`fileno'_usevars'"=="" | "`file`fileno'_status'"=="ERROR" {
+		display "Not merged."		
 	}
 	else {
 		foreach var of varlist `file`fileno'_usevars' {
@@ -233,7 +245,7 @@ foreach fileno of numlist 1/`filescount' {
 		if "`file`fileno'_notusevars'"!="" {
 			display "Not updated variable(s): `file`fileno'_notusevars'."
 		}
-		display
+		* display
 		*preserve
 		*use `mergefile`fileno'', clear
 		*desc
@@ -242,13 +254,23 @@ foreach fileno of numlist 1/`filescount' {
 		quietly merge 1:1 `keyvars' using `mergefile`fileno'', ///
 			keepusing(`file`fileno'_usevars') ///
 			assert(match match_update) update nogen
+		/*
+		if "`compare'"=="compare" {
+			preserve
+			soepcomparelabel "`filepath'/`fileroot'" using "`using'/`file'" , clear
+			ereturn local file`fileno'varlab "`e(varlab)'"
+			ereturn local file`fileno'vallab "`e(vallab)'"
+			restore
+		}
+		*/
 	}
-ereturn local file`fileno'status `file`fileno'_status'
-ereturn local file`fileno'usevars `file`fileno'_usevars'
-ereturn local file`fileno'notusevars `file`fileno'_notusevars'
+	ereturn local file`fileno'status `file`fileno'_status'
+	ereturn local file`fileno'message `file`fileno'_message'
+	ereturn local file`fileno'usevars `file`fileno'_usevars'
+	ereturn local file`fileno'navars `file`fileno'_navarlist'
+	ereturn local file`fileno'notusevars `file`fileno'_notusevars'
 
 }
 display "Merged by variable(s): `keyvars'"
-
 
 end

@@ -214,6 +214,7 @@ while `number' > 0 {
 	local number : word count `allfiles'
 }
 use `partialresults'
+quietly if _N==0 set obs 1
 export excel using "`pre'/partialresults.xls", firstrow(variables) replace
 
 end
