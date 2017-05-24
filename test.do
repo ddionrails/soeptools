@@ -1,5 +1,72 @@
 discard
-adopath ++ "D:/lokal/soeptools/soepfitsclass"
+adopath ++ "D:/lokal/soeptools/soepnextcons"
+adopath ++ "D:/lokal/soeptools/soepusemerge"
+adopath ++ "D:/lokal/soeptools/soepcomparelabel"
+adopath ++ "D:/lokal/soeptools/soepallcons"
+set more off
+set trace off
+soepallcons, version(v33_test) verbose empty replace
+ 
+
+program define soepallcons, nclass
+	version 13 
+	syntax , version(string) [humepath(string) verbose empty replace rsync]
+	
+soepnextcons, version(v33_test) step (1) verbose empty
+
+use "//hume/rdc-gen/consolidated/soep-core/soep.v33_test/consolidated1/wmuki2.dta", clear
+tempfile master
+save `master', replace
+soepcomparelabel `master' using "//hume/rdc-gen/generations/soep-core/soep.v33_test/complete1/wmuki2", clear
+ereturn list
+set trace off
+soepcomparelabel "//hume/rdc-gen/consolidated/soep-core/soep.v33_test/consolidated1/wmuki2.dta" using "//hume/rdc-gen/generations/soep-core/soep.v33_test/partial1/wmuki2_wm20201-na-sup.dta", clear
+ereturn list
+
+soepcomparelabel "//hume/rdc-gen/consolidated/soep-core/soep.v33_test/consolidated1/wmuki2.dta" using "//hume/rdc-gen/consolidated/soep-core/soep.v33_test/consolidated1/wmuki2.dta", clear
+ereturn list
+
+
+forvalues i = 2/2 {
+display "`i'"
+}
+
+
+use "//hume/rdc-gen/consolidated/soep-core/soep.v33_test/consolidated1/wmuki2.dta", clear 
+soepnextcons, version(v33_test) step (1) verbose empty
+
+soepusemerge "//hume/rdc-gen/consolidated/soep-core/soep.v33_test/consolidated2/bdvp.dta" using "//hume/rdc-gen/generations/soep-core/soep.v33_test/partial1/", clear verbose compare
+soepusemerge "//hume/rdc-gen/generations/soep-core/soep.v33_test/complete1/wmuki2.dta" using "//hume/rdc-gen/generations/soep-core/soep.v33_test/partial1/", clear verbose compare
+ereturn list
+
+capture isid persnr
+display _rc
+
+
+sysuse auto, clear
+uselabel, clear
+
+
+local variable "mpg"
+capture confirm string variable `variable'
+if _rc {
+	count if `variable' == .
+	if `r(N)'>0 {
+		local navarlist "`navarlist' `variable'"
+	}
+}
+display "navarlist: `navarlist'"
+
+
+
+desc
+return list
+
+
+program define soepnextcons, nclass
+	version 13 
+	syntax , version(string) nextcons(integer 2) [humepath(string) verbose empty replace rsync]
+
 
 local fix pber
 use "${temp}`fix'", clear
@@ -123,6 +190,15 @@ adopath ++ "D:/lokal/soeptools/soepapplyvaluelabel"
 *soepapplyvaluelabel foreign mpg, id(1,16) language(de) utf2cp
 
 discard
+adopath ++ "D:/lokal/soeptools/soepidvars"
+
+discard
+adopath ++ "D:/lokal/soeptools/soepgenpre"
+
+discard
+adopath ++ "D:/lokal/soeptools/soepusemerge"
+
+discard
 adopath ++ "D:/lokal/soeptools/soepfitsclass"
 
 discard
@@ -145,3 +221,5 @@ adopath ++ "D:/lokal/soeptools/soepclassinfo"
 
 discard
 adopath ++ "D:/lokal/soeptools/soepopenclass"
+
+

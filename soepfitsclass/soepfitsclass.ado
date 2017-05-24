@@ -25,6 +25,11 @@ syntax varname [using/] , id(string) [verbose force]
 *local varlist "v_kldb2010raw"
 *local id "800"
 
+if _N==0 {
+	display "No Observations. Abort check."
+	exit
+}
+
 tempfile myfile
 quietly save `myfile', replace
 

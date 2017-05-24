@@ -5,10 +5,11 @@ d (see http://ddionrails.org/soeptools/)
 d
 d Requires: Stata version 13 or newer
 d
-d Distribution-Date: 20170331
+d Distribution-Date: 20170524
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+* version 0.2.1 24 Mai 2017 - soepallcons: bugfix for emptyexcel exports
 * version 0.2 31 March 2017 - new workflow (soepallcons/soepnextcons/soepcomparelabel)
 * version 0.15 29 September 2016 - soepgenpre/soepusemerge: report in partialresult.xls
 * version 0.14 29 September 2016 - soepidvars: bugfix (ignore isid hhnr in personal files)

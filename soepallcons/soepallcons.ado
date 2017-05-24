@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepallcons.ado: produce all consolidated from all partial and complete folders
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.2.1 24 Mai 2017 - soepallcons: bugfix for emptyexcel exports
 *! version 0.2 31 Maerz 2017 - introduce soepallcons
 
 program define soepallcons, nclass
@@ -92,6 +93,7 @@ foreach type of local types {
 		append using ``type'sheet`step''
 		quietly drop if step==""
 		local stepplus1 = `step'+1
+		quietly if _N==0 set obs 1
 		quietly export excel using "`consroot'consolidated`stepplus1'/`type'results.xls", firstrow(variables) replace
 	}
 }
