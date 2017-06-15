@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepnextcons.ado: consolidate complete+partial+consolidated for next consolidated
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.2.2 15 Juni 2017 - soepnextcons/soepusemerge: check for dtaversion
 *! version 0.2 31 Maerz 2017 - introduce soepnextcons
 
 program define soepnextcons, nclass
@@ -218,14 +219,23 @@ foreach file of local completes {
 	* display "`conolidates'"
 	local consolidatedremain : subinstr local consolidatedremain `"`file'"' "", all word count(local found)
 	* display "file: `file', consolidateds: `consolidatedremain', found: `found'"
+	* detect version of file
+	dtaversion "`complete'`file'.dta"
+	local dversion r(version)
 	if "`found'"=="0" {
 		* NO: file in not consolidated
 		local status "ERROR"
-		local message "`message' NOT found in consolidated`step'."
-		local varlab
-		local vallab
+		local message "`message' NOT found in consolidated`step'. "
+	}
+	else if `dversion' > 117 {
+		local status "ERROR"
+		local message "`message'File is dta_`dversion', not Stata 12 (115). "
 	}
 	else {
+		if `dversion'==117 | `dversion'<115{
+			local status "Warning"
+			local message "`message'File is dta_`dversion', not Stata 12 (115). "
+		}
 		* empty consolidated file and write to tempfile consolidatedfile
 		* - will become master for append
 		quietly use `consolidated'`file', clear
@@ -256,7 +266,7 @@ foreach file of local completes {
 			if "`found'"=="0"{
 				local notused "`notused' `variable'"
 				local status "Warning"
-				local message "`message' Superflous variable(s) dropped."
+				local message "`message'Superflous variable(s) dropped. "
 				quietly drop `variable'				
 			}
 			else {
@@ -266,7 +276,7 @@ foreach file of local completes {
 					if `r(N)'>0 {
 						local navarlist "`navarlist' `variable'"
 						local status "Warning"
-						local message "`message' Variable(s) containg NAs."
+						local message "`message'Variable(s) containg NAs. "
 					}
 				}
 			}
@@ -287,16 +297,18 @@ foreach file of local completes {
 		}
 		else {
 			local status "ERROR"
-			local message "`message' Keyvar(s) not id."
+			local message "`message'Keyvar(s) not id. "
 			local isid_keyvars "NO"
 			local withoutkey_number: word count withoutkey
 			if `withoutkey_number'!=0 {
 			local message "Keyvar(s) missing. `message'"
 			}
 		}
-		soepcomparelabel `consolidated'`file' using `complete'`file', clear
-		local varlab "`e(varlab)'"
-		local vallab "`e(vallab)'"
+		if "`status'"!="ERROR" {
+			soepcomparelabel `consolidated'`file' using `complete'`file', clear
+			local varlab "`e(varlab)'"
+			local vallab "`e(vallab)'"
+		}
 	}
 		
 	* display "consolidated remain: `consolidatedremain'"
@@ -390,12 +402,14 @@ foreach file of local partials {
 			quietly capture replace withNA   ="`e(file`no'navars)'"    in `no'
 			quietly capture replace notused="`e(file`no'notusevars)'" in `no'
 			
-			preserve
-			soepcomparelabel "`nextconsolidated'/`e(masterfile)'" using "`partial'/`partialfile'" , clear
-			restore
-				
-			quietly capture replace varlab="`e(varlab)'" in `no'
-			quietly capture replace vallab="`e(vallab)'" in `no'
+			if "`e(file`no'status)'"!="ERROR" {
+				preserve
+				soepcomparelabel "`nextconsolidated'/`e(masterfile)'" using "`partial'/`partialfile'" , clear
+				restore
+					
+				quietly capture replace varlab="`e(varlab)'" in `no'
+				quietly capture replace vallab="`e(vallab)'" in `no'
+			}
 		}
 
 		quietly append using `partialresults'

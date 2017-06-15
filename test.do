@@ -1,11 +1,12 @@
 discard
 adopath ++ "D:/lokal/soeptools/soepnextcons"
+adopath ++ "D:/lokal/soeptools/soepnextcons"
 adopath ++ "D:/lokal/soeptools/soepusemerge"
 adopath ++ "D:/lokal/soeptools/soepcomparelabel"
 adopath ++ "D:/lokal/soeptools/soepallcons"
 set more off
 set trace off
-soepallcons, version(v33_test) verbose empty replace
+soepallcons, version(v33) verbose empty replace
  
 
 program define soepallcons, nclass
@@ -182,27 +183,17 @@ adopath ++ "D:/lokal/soeptools/soeputf2cp"
 *return list
 
 
-discard
-adopath ++ "D:/lokal/soeptools/soepapplyvaluelabel"
-
-
 *sysuse auto, clear
 *soepapplyvaluelabel foreign mpg, id(1,16) language(de) utf2cp
-
-discard
-adopath ++ "D:/lokal/soeptools/soepidvars"
-
-discard
-adopath ++ "D:/lokal/soeptools/soepgenpre"
-
-discard
-adopath ++ "D:/lokal/soeptools/soepusemerge"
 
 discard
 adopath ++ "D:/lokal/soeptools/soepfitsclass"
 
 discard
-adopath ++ "D:/lokal/soeptools/soepmergeclass"
+adopath ++ "D:/lokal/soeptools/soepapplyvaluelabel"
+
+discard
+adopath ++ "D:/lokal/soeptools/soepclassinfo"
 
 discard
 adopath ++ "D:/lokal/soeptools/soepinfra2ganze"
@@ -214,10 +205,25 @@ discard
 adopath ++ "D:/lokal/soeptools/soepkldb92mps"
 
 discard
-adopath ++ "D:/lokal/soeptools/soepdropchar"
+adopath ++ "D:/lokal/soeptools/soepmergeclass"
 
 discard
-adopath ++ "D:/lokal/soeptools/soepclassinfo"
+adopath ++ "D:/lokal/soeptools/soepidvars"
+
+discard
+adopath ++ "D:/lokal/soeptools/soepgenpre"
+
+discard
+adopath ++ "D:/lokal/soeptools/soepusemerge"
+
+
+
+
+
+
+discard
+adopath ++ "D:/lokal/soeptools/soepdropchar"
+
 
 discard
 adopath ++ "D:/lokal/soeptools/soepopenclass"

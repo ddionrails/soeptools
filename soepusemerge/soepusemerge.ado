@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.2.2 15 Juni 2017 - soepnextcons/soepusemerge: check for dtaversion
 *! version 0.2 31 Maerz 2017 - recstructed log in partialresult.xls
 *! version 0.15 29 September 2016 - soepgenpre/soepusemerge: report in partialresult.xls
 *! version 0.13 28 September 2016 - soepusemerge: bugfix
@@ -104,58 +105,78 @@ foreach fileno of numlist 1/`filescount' {
 	if "`verbose'"=="verbose" {
 		display "Processing file: `file':"
 	}
-	tempfile mergefile`fileno'
-	quietly use "`using'/`file'", clear
-	quietly save `mergefile`fileno'', replace
-	quietly ds
-	local varlist = r(varlist)
-	if "`verbose'"=="verbose" {
-		display "Variables in file: `varlist'"
-	}
-	local file`fileno'_newvars : list varlist - keyvars
-	if "`verbose'"=="verbose" {
-		display "Variables to be checked for adding: `file`fileno'_newvars'"
-	}
 	
-	local file`fileno'_status OK
+	dtaversion "`using'/`file'"
+	local dversion = r(version)
+	display "Version: `dversion'"
+	
+	local file`fileno'_status "OK"
 	local file`fileno'_message
-	local file`fileno'_navarlist
-	local file`fileno'_keyvars : list varlist & keyvars
-	if "`verbose'"=="verbose" {
-		display "Found keyvars: `file`fileno'_keyvars'"
-	}
 	
-	local file`fileno'_keyvars_check : list file`fileno'_keyvars === keyvars
-	
-	if "`file`fileno'_keyvars_check'"=="0" {
-		local file`fileno'_status "NO, containing not all keyvars"
+	if `dversion' > 117 {
 		local file`fileno'_status "ERROR"
-		local file`fileno'_message "`file`fileno'_message' Keyvar(s) missing."
-		local file`fileno'_withoutkey : list keyvars - file`fileno'_keyvars
-	}
-	else {
+		local file`fileno'_message "`file`fileno'_message'File is dta_`dversion', not Stata 12 (115). "
 		if "`verbose'"=="verbose" {
-			display "All keyvars found."
+			display "ERROR: File is dta_`dversion', more recent than Stata 13 (117)."
 		}
 	}
-	local typecheck
-	foreach keyvar of local file`fileno'_keyvars {
-		local type : type `keyvar'
-		local typecheck "`typecheck' `type'"
+	else if `dversion' != 115 {
+		local file`fileno'_status "Warning"
+		local file`fileno'_message "`file`fileno'_message'File is dta_`dversion', not Stata 12 (115). "
+		if "`verbose'"=="verbose" {
+			display "Warning: File is dta_`dversion', e.g. Stata 13 (117) or older than Stata 12 (115)"
+		}
 	}
-	local typecheck : list uniq typecheck
-	if "`typecheck'"!="long" {
-			local file`fileno'_status "ERROR"
-			local file`fileno'_message "`file`fileno'_message' Keyvar(s) not long."
-	}
+	if "`file`fileno'_status'"!="ERROR" {
+		tempfile mergefile`fileno'
+		quietly use "`using'/`file'", clear
+		quietly save `mergefile`fileno'', replace
+		quietly ds
+		local varlist = r(varlist)
+		if "`verbose'"=="verbose" {
+			display "Variables in file: `varlist'"
+		}
+		local file`fileno'_newvars : list varlist - keyvars
+		if "`verbose'"=="verbose" {
+			display "Variables to be checked for adding: `file`fileno'_newvars'"
+		}
 	
-	capture merge 1:1 `keyvars' using `allrows', assert(match) nogen
-	if _rc != 0 & "`file`fileno'_status'"=="OK" {
-		local file`fileno'_status "ERROR"
-		local file`fileno'_message "`file`fileno'_message' Rows do not match."		
-	}
-			
-	if "`file`fileno'_status'"=="OK" {
+		local file`fileno'_navarlist
+		local file`fileno'_keyvars : list varlist & keyvars
+		if "`verbose'"=="verbose" {
+			display "Found keyvars: `file`fileno'_keyvars'"
+		}
+	
+		local file`fileno'_keyvars_check : list file`fileno'_keyvars === keyvars
+	
+		if "`file`fileno'_keyvars_check'"=="0" {
+			local file`fileno'_status "ERROR"
+			local file`fileno'_message "`file`fileno'_message'Keyvar(s) missing. "
+			local file`fileno'_withoutkey : list keyvars - file`fileno'_keyvars
+		}
+		else {
+			if "`verbose'"=="verbose" {
+				display "All keyvars found."
+			}
+		}
+		local typecheck
+		foreach keyvar of local file`fileno'_keyvars {
+			local type : type `keyvar'
+			local typecheck "`typecheck' `type'"
+		}
+		local typecheck : list uniq typecheck
+		if "`typecheck'"!="long" {
+				local file`fileno'_status "ERROR"
+				local file`fileno'_message "`file`fileno'_message'Keyvar(s) not long. "
+		}
+	
+		capture merge 1:1 `keyvars' using `allrows', assert(match) nogen
+		if _rc != 0 & "`file`fileno'_status'"=="OK" {
+			local file`fileno'_status "ERROR"
+			local file`fileno'_message "`file`fileno'_message'Rows do not match. "		
+		}
+	}	
+	if "`file`fileno'_status'"!="ERROR" {
 		foreach var of local file`fileno'_newvars {
 			* display "usevars: `file`fileno'_usevars'"
 			* display "var: `var'"
@@ -177,7 +198,7 @@ foreach fileno of numlist 1/`filescount' {
 				else {
 					local file`fileno'_notusevars = `"`file`fileno'_notusevars' `var'"'
 					local file`fileno'_status "Warning"
-					local file`fileno'_message "`file`fileno'_message' Some variable(s) NOT used: new string."
+					local file`fileno'_message "`file`fileno'_message'Some variable(s) NOT used: new string. "
 					if "`verbose'"=="verbose" {
 						display "Variable `var' is string, new and NOT used."
 					}
@@ -199,13 +220,13 @@ foreach fileno of numlist 1/`filescount' {
 						local file`fileno'_usevars = `"`file`fileno'_usevars' `var'"'
 						local file`fileno'_navarlist = `"`file`fileno'_navarlist' `var'"'
 						local file`fileno'_status "Warning"
-						local file`fileno'_message "`file`fileno'_message' Variable(s) containing NAs."
+						local file`fileno'_message "`file`fileno'_message'Variable(s) containing NAs. "
 					}
 				}
 				else {
 					local file`fileno'_notusevars = `"`file`fileno'_notusevars' `var'"'
 					local file`fileno'_status "Warning"
-					local file`fileno'_message "`file`fileno'_message' Superflous variable(s) dropped."
+					local file`fileno'_message "`file`fileno'_message'Superflous variable(s) dropped. "
 				}
 			}
 		}
