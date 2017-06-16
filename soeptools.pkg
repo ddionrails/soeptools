@@ -5,10 +5,11 @@ d (see http://ddionrails.org/soeptools/)
 d
 d Requires: Stata version 13 or newer
 d
-d Distribution-Date: 20170615
+d Distribution-Date: 20170616
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+* version 0.2.3 16 Juni 2017 - soepusemerge: fix exception handling for non-fitting partials
 * version 0.2.2 15 Juni 2017 - soepnextcons/soepusemerge: check for dtaversion
 * version 0.2.1 24 Mai 2017 - soepallcons: bugfix for emptyexcel exports
 * version 0.2 31 March 2017 - new workflow (soepallcons/soepnextcons/soepcomparelabel)

@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.2.3 16 Juni 2017 - soepusemerge: fix exception handling for non-fitting partials
 *! version 0.2.2 15 Juni 2017 - soepnextcons/soepusemerge: check for dtaversion
 *! version 0.2 31 Maerz 2017 - recstructed log in partialresult.xls
 *! version 0.15 29 September 2016 - soepgenpre/soepusemerge: report in partialresult.xls
@@ -171,7 +172,7 @@ foreach fileno of numlist 1/`filescount' {
 		}
 	
 		capture merge 1:1 `keyvars' using `allrows', assert(match) nogen
-		if _rc != 0 & "`file`fileno'_status'"=="OK" {
+		if _rc != 0 & "`file`fileno'_status'"!="ERROR" {
 			local file`fileno'_status "ERROR"
 			local file`fileno'_message "`file`fileno'_message'Rows do not match. "		
 		}
