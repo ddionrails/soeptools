@@ -19,12 +19,13 @@
 -------------------------------------------------------------------------------*/
 *! soepnextcons.ado: consolidate complete+partial+consolidated for next consolidated
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3 26 Juni 2017 - introduce soepdatetime and write excel files with timestamp
 *! version 0.2.2 15 Juni 2017 - soepnextcons/soepusemerge: check for dtaversion
 *! version 0.2 31 Maerz 2017 - introduce soepnextcons
 
 program define soepnextcons, nclass
 	version 13 
-	syntax , version(string) step(integer) [humepath(string) verbose empty replace rsync]
+	syntax , version(string) step(integer) [humepath(string) verbose empty replace rsync timestamp(string)]
 
 /*
 if "`verbose'"=="verbose" {
@@ -32,6 +33,10 @@ if "`verbose'"=="verbose" {
 	display `"humepathpre:`humepath':"'
 }
 */
+if "`verbose'"=="verbose" {
+	display "timestamp: `timestamp'"	
+}
+
 if "`humepath'"=="" {
 	if "`c(os)'`c(username)'"=="Unixjgoebel" {
 		local humepath "/mnt/"
@@ -420,10 +425,10 @@ foreach file of local partials {
 
 quietly use `partialresults', clear
 quietly if _N==0 set obs 1
-quietly export excel using "`partial'/partialresults.xls", firstrow(variables) replace
+quietly export excel using "`partial'/partialresults`timestamp'.xls", firstrow(variables) replace
 
 quietly use `completeresults', clear
 quietly if _N==0 set obs 1
-quietly export excel using "`complete'/completeresults.xls", firstrow(variables) replace
+quietly export excel using "`complete'/completeresults`timestamp'.xls", firstrow(variables) replace
 
 end

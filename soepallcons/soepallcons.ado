@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepallcons.ado: produce all consolidated from all partial and complete folders
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3 26 Juni 2017 - introduce soepdatetime and write excel files with timestamp
 *! version 0.2.1 24 Mai 2017 - soepallcons: bugfix for emptyexcel exports
 *! version 0.2 31 Maerz 2017 - introduce soepallcons
 
@@ -73,15 +74,19 @@ if _rc!=0 {
 	display as error "Not enough consolidated folders."
 	exit 9			
 }
+
+soepdatetime, `verbose'
+local timestamp `"_`r(datetime)'"'
+
 forvalues step = 1/`steps' {
 	if "`verbose'"=="verbose" {
 		display "Processing step `step'."
 	}
-	soepnextcons, version(`version') step(`step') `empty' `replace' `rsync' `verbose'
+	soepnextcons, version(`version') step(`step') `empty' `replace' `rsync' `verbose' timestamp(`timestamp')
 	local types "partial complete"
 	foreach type of local types {
 		tempfile `type'sheet`step'
-		import excel "`genroot'`type'`step'/`type'results.xls", sheet("Sheet1") firstrow allstring clear
+		import excel "`genroot'`type'`step'/`type'results`timestamp'.xls", sheet("Sheet1") firstrow allstring clear
 		quietly save ``type'sheet`step'', replace
 	}	
 }
@@ -94,7 +99,7 @@ foreach type of local types {
 		quietly drop if step==""
 		local stepplus1 = `step'+1
 		quietly if _N==0 set obs 1
-		quietly export excel using "`consroot'consolidated`stepplus1'/`type'results.xls", firstrow(variables) replace
+		quietly export excel using "`consroot'consolidated`stepplus1'/`type'results`timestamp'.xls", firstrow(variables) replace
 	}
 }
 

@@ -5,10 +5,11 @@ d (see http://ddionrails.org/soeptools/)
 d
 d Requires: Stata version 13 or newer
 d
-d Distribution-Date: 20170616
+d Distribution-Date: 20170626
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+* version 0.3 26 Juni 2017 - introduce soepdatetime and write excel files with timestamp
 * version 0.2.3 16 Juni 2017 - soepusemerge: fix exception handling for non-fitting partials
 * version 0.2.2 15 Juni 2017 - soepnextcons/soepusemerge: check for dtaversion
 * version 0.2.1 24 Mai 2017 - soepallcons: bugfix for emptyexcel exports
@@ -31,6 +32,7 @@ d Support: kwenzig@diw.de
 * version 0.2 18 April 2016 - introduce soepgenpre
 * version 0.1 13 April 2016 - initial release
 
+f soepdatetime/soepdatetime.ado
 f soepallcons/soepallcons.ado
 f soepcomparelabel/soepcomparelabel.ado
 f soepdropchar/soepdropchar.ado
