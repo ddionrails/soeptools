@@ -15,6 +15,8 @@ program define soepallcons, nclass
 	
 soepnextcons, version(v33_test) step (1) verbose empty
 
+soepusemerge "//hume/rdc-gen/consolidated/soep-core/soep.v33/consolidated2/ppfad.dta" using "//hume/rdc-gen/generations/soep-core/soep.v33/partial2/", clear verbose compare
+
 use "//hume/rdc-gen/consolidated/soep-core/soep.v33_test/consolidated1/wmuki2.dta", clear
 tempfile master
 save `master', replace
