@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepnextcons.ado: consolidate complete+partial+consolidated for next consolidated
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3.1 29 Juni 2017 - soepnextcons: empty deletes only dta files, ERROR-files in complete copied from consolidated
 *! version 0.3 26 Juni 2017 - introduce soepdatetime and write excel files with timestamp
 *! version 0.2.2 15 Juni 2017 - soepnextcons/soepusemerge: check for dtaversion
 *! version 0.2 31 Maerz 2017 - introduce soepnextcons
@@ -62,9 +63,9 @@ if "`verbose'"=="verbose" {
 	display `"step + 1:+`stepplus1'+"'	
 }
 */
-* option empty: delete files in nextconsolidated folder
+* option empty: delete dta-files in nextconsolidated folder
 if "`empty'"=="empty" {
-	local nextconsolidatedfiles : dir "`nextconsolidated'" files "*"
+	local nextconsolidatedfiles : dir "`nextconsolidated'" files "*.dta"
 	if "`verbose'"=="verbose" {
 		display `"Files to delete in consolidated`stepplus1' folder: `nextconsolidatedfiles'"'
 	}
@@ -235,6 +236,8 @@ foreach file of local completes {
 	else if `dversion' > 117 {
 		local status "ERROR"
 		local message "`message'File is dta_`dversion', not Stata 12 (115). "
+		* instead copy file form consolidated
+		local consolidatedremain `consolidatedremain' `file'
 	}
 	else {
 		if `dversion'==117 | `dversion'<115{
@@ -307,6 +310,8 @@ foreach file of local completes {
 			local withoutkey_number: word count withoutkey
 			if `withoutkey_number'!=0 {
 			local message "Keyvar(s) missing. `message'"
+			* instead copy file form consolidated
+			local consolidatedremain `consolidatedremain' `file'
 			}
 		}
 		if "`status'"!="ERROR" {
@@ -343,7 +348,7 @@ foreach file of local completes {
 
 * 2. alle consolidate, die nicht in complete sind in nextconsolidated schreiben
 
-* display "in Schritt 2 consolidated remain: `consolidatedremain'"
+display "consolidated remain: `consolidatedremain'"
 
 foreach file of local consolidatedremain {
 	if "`rsync'"=="rsync" {
