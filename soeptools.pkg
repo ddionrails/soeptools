@@ -5,10 +5,12 @@ d (see http://ddionrails.org/soeptools/)
 d
 d Requires: Stata version 13 or newer
 d
-d Distribution-Date: 20170629
+d Distribution-Date: 20170704
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+* version 0.3.2 4 July 2017 - soepidsvars: return nothing, if no keyvar is found
+*                             soepnextcons: use keyvars from complete file
 * version 0.3.1 29 Juni 2017 - soepnextcons: empty deletes only dta files, ERROR-files in complete copied from consolidated
 * version 0.3 26 Juni 2017 - introduce soepdatetime and write excel files with timestamp
 * version 0.2.3 16 Juni 2017 - soepusemerge: fix exception handling for non-fitting partials

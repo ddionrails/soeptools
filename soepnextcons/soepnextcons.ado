@@ -19,6 +19,8 @@
 -------------------------------------------------------------------------------*/
 *! soepnextcons.ado: consolidate complete+partial+consolidated for next consolidated
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3.2 4 July 2017 - soepidsvars: return nothing, if no keyvar is found
+*!                             soepnextcons: use keyvars from complete file
 *! version 0.3.1 29 Juni 2017 - soepnextcons: empty deletes only dta files, ERROR-files in complete copied from consolidated
 *! version 0.3 26 Juni 2017 - introduce soepdatetime and write excel files with timestamp
 *! version 0.2.2 15 Juni 2017 - soepnextcons/soepusemerge: check for dtaversion
@@ -249,8 +251,6 @@ foreach file of local completes {
 		quietly use `consolidated'`file', clear
 		quietly ds
 		local consvarlist = r(varlist)
-		quietly soepidvars, `verbose'
-		local keyvars = r(idvars)
 		tempvar drophelp
 		gen `drophelp'=1
 		quietly drop if `drophelp'==1
@@ -265,9 +265,12 @@ foreach file of local completes {
 		quietly ds
 		local compvarlist = r(varlist)
 		local keepvarlist "`compvarlist'"
+		quietly soepidvars, `verbose'
+		local keyvars = r(idvars)
+		display "keyvars: `keyvars'"
 		local navarlist 
 		local missing "`consvarlist'"
-		local withoutkey "`keyvars'"
+		* local withoutkey "`keyvars'"
 		local notused 
 		foreach variable of local compvarlist {
 			local missing : subinstr local missing `"`variable'"' "", all word count(local found)
@@ -288,7 +291,7 @@ foreach file of local completes {
 					}
 				}
 			}
-			local withoutkey : subinstr local withoutkey `"`variable'"' "", all word
+			* local withoutkey : subinstr local withoutkey `"`variable'"' "", all word
 			
 		}
 		capture isid `keyvars'
@@ -305,14 +308,10 @@ foreach file of local completes {
 		}
 		else {
 			local status "ERROR"
-			local message "`message'Keyvar(s) not id. "
+			local message "`message'No keyvar(s) found. "
 			local isid_keyvars "NO"
-			local withoutkey_number: word count withoutkey
-			if `withoutkey_number'!=0 {
-			local message "Keyvar(s) missing. `message'"
 			* instead copy file form consolidated
 			local consolidatedremain `consolidatedremain' `file'
-			}
 		}
 		if "`status'"!="ERROR" {
 			soepcomparelabel `consolidated'`file' using `complete'`file', clear

@@ -1,19 +1,27 @@
 discard
 adopath ++ "D:/lokal/soeptools/soepnextcons"
-adopath ++ "D:/lokal/soeptools/soepnextcons"
 adopath ++ "D:/lokal/soeptools/soepusemerge"
 adopath ++ "D:/lokal/soeptools/soepcomparelabel"
 adopath ++ "D:/lokal/soeptools/soepallcons"
+adopath ++ "D:/lokal/soeptools/soepdatetime"
 set more off
 set trace off
+soepallcons, version(v33) verbose replace
+
+soepdatetime
+local stamp `"`r(datetime)'"'
+display "`stamp'"
+
 soepallcons, version(v33) verbose empty replace
+
+soepallcons, version(v33t) verbose empty replace
  
 
 program define soepallcons, nclass
 	version 13 
 	syntax , version(string) [humepath(string) verbose empty replace rsync]
 	
-soepnextcons, version(v33_test) step (1) verbose empty
+soepnextcons, version(v33_test) step(1) timestamp("test") verbose empty
 
 soepusemerge "//hume/rdc-gen/consolidated/soep-core/soep.v33/consolidated2/ppfad.dta" using "//hume/rdc-gen/generations/soep-core/soep.v33/partial2/", clear verbose compare
 

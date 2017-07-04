@@ -19,6 +19,8 @@
 -------------------------------------------------------------------------------*/
 *! soepidvars.ado: varlist which uniquely identify oberservations
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3.2 4 July 2017 - soepidsvars: return nothing, if no keyvar is found
+*!                             soepnextcons: use keyvars from complete file
 *! version 0.14 29 September 2016 - soepidvars: bugfix (ignore isid hhnr in personal files)
 *! version 0.12 28 September 2016 - soepidvars: ignore isid hhnr in personal files
 *! version 0.3 19 April 2016 - initial release
@@ -81,7 +83,12 @@ foreach varlist of local alllists {
 		}
 		
 	}
-	if "`found'"=="yes" continue, break
+	if "`found'"=="yes" {
+		continue, break
+	}
+	else {
+		local testids ""
+	}
 }
 
 return local idvars `testids'
