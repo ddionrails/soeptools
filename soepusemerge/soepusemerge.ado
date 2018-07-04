@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3.5 4 July 2018 - update for version 14 and above
 *! version 0.2.3 16 Juni 2017 - soepusemerge: fix exception handling for non-fitting partials
 *! version 0.2.2 15 Juni 2017 - soepnextcons/soepusemerge: check for dtaversion
 *! version 0.2 31 Maerz 2017 - recstructed log in partialresult.xls
@@ -29,7 +30,7 @@
 *! version 0.1 13 April 2016 - initial release
 
 program define soepusemerge , eclass
-	version 13
+	version 14
 	syntax anything(name=pathwfile) using/ , clear [keyvars(namelist) verbose compare]
 
 * check whether getfilename is installed
@@ -62,7 +63,7 @@ if "`verbose'"=="verbose" {
 }
 ereturn local masterfile `fileroot'
 tempfile usefile
-quietly use "`filepath'/`fileroot'", clear
+quietly useold "`filepath'/`fileroot'", clear
 quietly ds
 local mastervars = r(varlist)
 if "`verbose'"=="verbose" {
@@ -130,7 +131,7 @@ foreach fileno of numlist 1/`filescount' {
 	}
 	if "`file`fileno'_status'"!="ERROR" {
 		tempfile mergefile`fileno'
-		quietly use "`using'/`file'", clear
+		quietly useold "`using'/`file'", clear
 		quietly save `mergefile`fileno'', replace
 		quietly ds
 		local varlist = r(varlist)

@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepgenpre.ado: Consolidate files from three sources (consolidated, partial, complete)
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3.5 4 July 2018 - update for version 14 and above
 *! version 0.15 29 September 2016 - soepgenpre/soepusemerge: report in partialresult.xls
 *! version 0.7 17 June 2016 - soepgenpre: underscore in filenames #6
 *! version 0.6.1 30 May 2016 - soepgenpre: add quiety prior rsync
@@ -27,7 +28,7 @@
 *! version 0.2 18 April 2016 - introduce soepgenpre
 
 program define soepgenpre, nclass
-	version 13 
+	version 14 
 	syntax , version(string) [humepath(string) verbose empty replace dopartial docomplete rsync]
 if "`verbose'"=="verbose" {
 	display `"version:`version':"'
@@ -178,7 +179,7 @@ while `number' > 0 {
 		* display "use:`consolidated'`file'.dta:"
 		* display "using:`partial':"
 		quietly: soepusemerge "`consolidated'`file'.dta" using "`partial'", clear `verbose'
-		saveold "`pre'`file'", `replace'
+		saveascii "`pre'`file'", `replace' version(12)
 		use `partialresults', clear
 		keep if consolidated==""
 		if `e(usingfilesno)'>0 {

@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepnextcons.ado: consolidate complete+partial+consolidated for next consolidated
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3.5 4 July 2018 - update for version 14 and above
 *! version 0.3.2 4 July 2017 - soepidsvars: return nothing, if no keyvar is found
 *!                             soepnextcons: use keyvars from complete file
 *! version 0.3.1 29 Juni 2017 - soepnextcons: empty deletes only dta files, ERROR-files in complete copied from consolidated
@@ -27,9 +28,18 @@
 *! version 0.2 31 Maerz 2017 - introduce soepnextcons
 
 program define soepnextcons, nclass
-	version 13 
+	version 14 
 	syntax , version(string) step(integer) [humepath(string) verbose empty replace rsync timestamp(string)]
 
+* check whether saveascii is installed
+quietly capture findfile saveascii.ado
+if "`r(fn)'" == "" {
+         di as txt "package saveascii needs to be installed first;"
+         di as txt "use -ssc install saveascii- to do that"
+         exit 498
+}	
+	
+	
 /*
 if "`verbose'"=="verbose" {
 	display `"version:`version':"'
@@ -146,7 +156,7 @@ if "`verbose'"=="verbose" {
 }
 
 /*
-* alle files, die in consolidated ersetzt/ergänzt werden
+* alle files, die in consolidated ersetzt/ergÃ¤nzt werden
 local tempfiles "`completes' `partials'"
 local number : word count `tempfiles'
 set trace off
@@ -248,7 +258,7 @@ foreach file of local completes {
 		}
 		* empty consolidated file and write to tempfile consolidatedfile
 		* - will become master for append
-		quietly use `consolidated'`file', clear
+		quietly useold `consolidated'`file', clear
 		quietly ds
 		local consvarlist = r(varlist)
 		tempvar drophelp
@@ -261,7 +271,7 @@ foreach file of local completes {
 		tempfile consolidatedfile
 		quietly save `consolidatedfile', replace
 		
-		quietly use `complete'`file', clear
+		quietly useold `complete'`file', clear
 		quietly ds
 		local compvarlist = r(varlist)
 		local keepvarlist "`compvarlist'"
@@ -304,7 +314,7 @@ foreach file of local completes {
 			* desc
 			quietly append using `toappend'
 			* desc
-			quietly saveold `nextconsolidated'`file', replace
+			quietly saveascii `nextconsolidated'`file', replace version(12)
 		}
 		else {
 			local status "ERROR"
@@ -358,7 +368,7 @@ foreach file of local consolidatedremain {
 	}
 }
 
-* 3. alle files, für die es partial gibt, mit den partials verbinden
+* 3. alle files, fÃ¼r die es partial gibt, mit den partials verbinden
 
 * local nextconsolidateds: alle files in nextconsolidated
 local nextconsolidateds : dir "`nextconsolidated'" files "*.dta"
@@ -391,7 +401,7 @@ foreach file of local partials {
 			continue
 		}
 		soepusemerge "`nextconsolidated'`file'.dta" using "`partial'", clear
-		quietly saveold "`nextconsolidated'`file'", replace
+		quietly saveascii "`nextconsolidated'`file'", replace version(12)
 		quietly use `partialresults', clear
 		quietly keep if master==""
 		if `e(usingfilesno)'>0 {
