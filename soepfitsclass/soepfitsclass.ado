@@ -22,8 +22,9 @@ program define soepfitsclass, rclass
 syntax varname [using/] , id(string) [verbose force]
 
 *debug
-*local varlist "v_kldb2010raw"
-*local id "800"
+*local varlist "abscode"
+*local id "2075"
+*local verbose "verbose"
 
 if _N==0 {
 	display "No Observations. Abort check."
@@ -39,6 +40,10 @@ quietly save `file', replace
 
 local lblname : value label `varlist'
 uselabel `lblname', clear
+drop if lname!="`lblname'"
+if "`verbose'"=="verbose" {
+	display "Name of analysed value label: `lblname'."
+}
 drop lname trunc
 tempfile usedlabel
 quietly save `usedlabel', replace

@@ -3,12 +3,14 @@ d
 d text 
 d (see http://ddionrails.org/soeptools/) 
 d
-d Requires: Stata version 13 or newer
+d Requires: Stata version 14 or newer
 d
-d Distribution-Date: 20170704
+d Distribution-Date: 20180704
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
+
+* version 0.3.3 4 July 2018 - soepapplyvalues: switch repo and introduce soepstyle, publicly introduced
 * version 0.3.2 4 July 2017 - soepidsvars: return nothing, if no keyvar is found
 *                             soepnextcons: use keyvars from complete file
 * version 0.3.1 29 Juni 2017 - soepnextcons: empty deletes only dta files, ERROR-files in complete copied from consolidated
@@ -35,6 +37,8 @@ d Support: kwenzig@diw.de
 * version 0.2 18 April 2016 - introduce soepgenpre
 * version 0.1 13 April 2016 - initial release
 
+f soepapplyvaluelabel/soepapplyvaluelabel.ado
+f soepapplyvaluelabel/soepapplyvaluelabel.sthlp
 f soepdatetime/soepdatetime.ado
 f soepallcons/soepallcons.ado
 f soepcomparelabel/soepcomparelabel.ado

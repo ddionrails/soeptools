@@ -1,6 +1,6 @@
 {smcl}
 {* *! version 0.10 (20160808)}{...}
-help for {cmd:soepapplyvaluelabel}{right:version 0.10 (20160808)}
+help for {cmd:soepapplyvaluelabel}{right:version 0.3.3 (20180704)}
 {hline}
 
 
@@ -14,13 +14,17 @@ help for {cmd:soepapplyvaluelabel}{right:version 0.10 (20160808)}
 {title:Syntax}
 
 {p 8 17 2}
-{cmd:soepapplyvaluelabel} {help varlist:{it:varlist}} {cmd:using} {it:pathname}, {opt id(template ids)} [{opt language(code)}]{p_end}
+{cmd:soepapplyvaluelabel} {help varlist:{it:varlist}} [{cmd:using} {it:pathname}], {opt id(template ids)} [{opt language(code)} {opt encoding(string)} {opt lblname(string)}  {opt soepstyle}]{p_end}
 
 {synoptset 20 tabbed}{...}
 {synopthdr}
 {synoptline}
+{synopt:{opt pathname}}location of template list, default: https://git.soep.de/kwenzig/additionalmetadata/raw/master/templates/{p_end}
 {synopt:{opt id(template ids)}}one ore more (comma separated) ids from the templates list, example: id(1,5){p_end}
-{synopt:{opt language(code)}}suffix to column {it:label} in metadata, example: language(de) uses column label_de{p_end}
+{synopt:{opt language(code)}}suffix to column {it:label} in metadata, example: language(de) uses column label_de, default de{p_end}
+{synopt:{opt encoding(string)}}encoding of metadata, default: utf-8{p_end}
+{synopt:{opt lblname(string)}}name of value label{p_end}
+{synopt:{opt soepstyle}}use if german umlauts should be converted (ä=ae etc.){p_end}
 {synoptline}
 
 {marker description}{...}
@@ -28,17 +32,6 @@ help for {cmd:soepapplyvaluelabel}{right:version 0.10 (20160808)}
 
 {pstd}
 {cmd:soepapplyvaluelabel} uses value templates from a file {it:values_templates.csv} {it:pathname}. The value label pairs found there are applied to the variables in {it:varlist}. The name of the value label will be t1_5 if {opt id(1,5)} is specified.
-{cmd:COMMAND} bla bla {help isid} {it:pathname} {help filename:{it:filename}} {opt keyvars}.
-
-
-{marker examples}{...}
-{title:Example}
-
-{pstd}
-For all datasets in one path: store all found varlists in a table:
-
-	{cmd:set more off                                                }
-
 
 {marker remarks}{...}
 {title:Remarks}

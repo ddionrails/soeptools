@@ -14,16 +14,17 @@
 -------------------------------------------------------------------------------*/
 *! soepapplyvaluelabel.ado: Applies value label from templates to variables
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3.3 4 July 2018 - soepapplyvalues: switch repo and introduce soepstyle
 *! version 0.10 (20160808) - introduce soepapplyvaluelabel/soepfitsclass
 
 program define soepapplyvaluelabel, rclass
 	version 14
-syntax varlist [using/] , id(string) [language(string) encoding(string) lblname(string)]
+syntax varlist [using/] , id(string) [language(string) encoding(string) lblname(string) soepstyle]
 
 tempfile myfile
 quietly save `myfile', replace
 
-if "`using'"=="" local using "https://gitlab.soep.de/kwenzig/additionalmetadata/raw/master/templates/"
+if "`using'"=="" local using "https://git.soep.de/kwenzig/additionalmetadata/raw/master/templates/"
 
 if "`encoding'"=="" local encoding "utf-8"
 
@@ -52,6 +53,16 @@ display "rows: `rows'"
 forvalues row = 1/`rows' {
 	local value_`row' = value[`row']
 	local label_`row' = label`language_suffix'[`row']
+	if "`soepstyle'" == "soepstyle" {
+		local label_`row'=ustrregexra("`label_`row''","ä","ae")
+		local label_`row'=ustrregexra("`label_`row''","ö","oe")
+		local label_`row'=ustrregexra("`label_`row''","ü","ue")
+		local label_`row'=ustrregexra("`label_`row''","Ä","Ae")
+		local label_`row'=ustrregexra("`label_`row''","Ö","Oe")
+		local label_`row'=ustrregexra("`label_`row''","Ü","Ue")
+		local label_`row'=ustrregexra("`label_`row''","ß","ss")
+		local label_`row' "[`value_`row''] `label_`row''"		
+	} 
 }
 
 use `myfile', clear
