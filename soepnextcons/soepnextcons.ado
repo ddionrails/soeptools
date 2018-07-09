@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepnextcons.ado: consolidate complete+partial+consolidated for next consolidated
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3.6 9 July 2018 - soepnextcons: bugfix in warning; soepusemerge takes care of _ in suffixes
 *! version 0.3.5 4 July 2018 - update for version 14 and above
 *! version 0.3.2 4 July 2017 - soepidsvars: return nothing, if no keyvar is found
 *!                             soepnextcons: use keyvars from complete file
@@ -239,7 +240,7 @@ foreach file of local completes {
 	* display "file: `file', consolidateds: `consolidatedremain', found: `found'"
 	* detect version of file
 	dtaversion "`complete'`file'.dta"
-	local dversion r(version)
+	local dversion = r(version)
 	if "`found'"=="0" {
 		* NO: file in not consolidated
 		local status "ERROR"

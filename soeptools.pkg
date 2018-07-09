@@ -10,6 +10,7 @@ d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
 
+* version 0.3.6 9 July 2018 - soepnextcons: bugfix in warning; soepusemerge takes care of _ in suffixes
 * version 0.3.5 4 July 2018 - update for version 14 and above
 * version 0.3.3 4 July 2018 - soepapplyvalues: switch repo and introduce soepstyle, publicly introduced
 * version 0.3.2 4 July 2017 - soepidsvars: return nothing, if no keyvar is found

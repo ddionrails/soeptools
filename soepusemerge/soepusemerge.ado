@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3.6 9 July 2018 - soepnextcons: bugfix in warning; soepusemerge takes care of _ in suffixes
 *! version 0.3.5 4 July 2018 - update for version 14 and above
 *! version 0.2.3 16 Juni 2017 - soepusemerge: fix exception handling for non-fitting partials
 *! version 0.2.2 15 Juni 2017 - soepnextcons/soepusemerge: check for dtaversion
@@ -91,10 +92,54 @@ if "`verbose'"=="verbose" {
 	display "describe dataset with all rows"
 	desc
 }
-local mergefiles : dir "`using'" files "`fileroot'_*.dta"
+
+local mergefilesraw : dir "`using'" files "`fileroot'_*.dta"
 if "`verbose'"=="verbose" {
-	display `"Files to merge: `mergefiles'"'
+	display `"Files to merge: `mergefilesraw'"'
 }
+
+* mergefiles ausschließen, die im Suffix einen weiteren Unterstrich haben
+local filescount : word count `mergefilesraw'
+if "`verbose'"=="verbose" {
+	display "Number of files to merge `filescount'"
+}
+local suffixes : subinstr local mergefilesraw "`fileroot'_" "", all
+if "`verbose'"=="verbose" {
+	display `"`suffixes'"'
+}
+local suffixescheck : subinstr local suffixes "_" "", all
+if "`verbose'"=="verbose" {
+	display `"`suffixescheck'"'
+}
+
+local mergefiles
+local dropfiles
+
+foreach fileno of numlist 1/`filescount' {
+	local mergefile: word `fileno' of `mergefilesraw'
+	local suffix: word `fileno' of `suffixes'
+	local suffixcheck: word `fileno' of `suffixescheck'
+	display "Test: `mergefile'"
+	if "`suffix'"=="`suffixcheck'" {
+		local mergefiles = "`mergefile' "+"`mergefiles'"
+		if "`verbose'"=="verbose" {
+			display "Wird aufgenommen."
+			display "aktuelle mergefiles: `mergefiles'"
+		}
+	}
+	else {
+		local dropfiles = "`mergefile' "+"`dropfiles'"
+		if "`verbose'"=="verbose" {
+			display "Wird nicht aufgenommen."
+			display "aktuelle dropfiles: `dropfiles'"
+		}
+	}
+}
+* Das sind nur mergefiles ohne _ im Sufix
+if "`verbose'"=="verbose" {
+	display "finale mergefiles: `mergefiles'"
+}
+
 ereturn local usingfiles `mergefiles'
 local filescount : word count `mergefiles'
 if "`verbose'"=="verbose" {
