@@ -203,10 +203,24 @@ adopath ++ "D:/lokal/soeptools/soeputf2cp"
 *soepapplyvaluelabel foreign mpg, id(1,16) language(de) utf2cp
 
 discard
-adopath ++ "D:/lokal/soeptools/soepfitsclass"
+adopath ++ "D:/lokal/soeptools/soepapplyvaluelabel"
 
 discard
-adopath ++ "D:/lokal/soeptools/soepapplyvaluelabel"
+adopath ++ "D:/lokal/soeptools/soepusemerge"
+
+discard
+adopath ++ "D:/lokal/soeptools/soepidvars"
+
+discard
+adopath ++ "D:/lokal/soeptools/soepgenpre"
+
+discard
+adopath ++ "D:/lokal/soeptools/soepdropchar"
+
+
+
+discard
+adopath ++ "D:/lokal/soeptools/soepfitsclass"
 
 discard
 adopath ++ "D:/lokal/soeptools/soepclassinfo"
@@ -224,24 +238,17 @@ discard
 adopath ++ "D:/lokal/soeptools/soepmergeclass"
 
 discard
-adopath ++ "D:/lokal/soeptools/soepidvars"
-
-discard
-adopath ++ "D:/lokal/soeptools/soepgenpre"
-
-discard
-adopath ++ "D:/lokal/soeptools/soepusemerge"
-
-
-
-
-
-
-discard
-adopath ++ "D:/lokal/soeptools/soepdropchar"
-
-
-discard
 adopath ++ "D:/lokal/soeptools/soepopenclass"
+
+
+
+
+
+
+
+
+
+
+
 
 
