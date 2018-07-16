@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepnextcons.ado: consolidate complete+partial+consolidated for next consolidated
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3.10 9 July 2018 - soepnextcons: bugfix in Behandlung mehrer partial files
 *! version 0.3.6 9 July 2018 - soepnextcons: bugfix in warning; soepusemerge takes care of _ in suffixes
 *! version 0.3.5 4 July 2018 - update for version 14 and above
 *! version 0.3.2 4 July 2017 - soepidsvars: return nothing, if no keyvar is found
@@ -412,7 +413,9 @@ foreach file of local partials {
 		}
 
 		forvalues no = 1/`e(usingfilesno)' {
-			local partialfile: word `no' of "`e(usingfiles)'"
+			local partialfile: word `no' of `e(usingfiles)'
+			*display "Das ist e(usingfiles): `e(usingfiles)'"
+			*display "Das ist das partialfile: `partialfile'"
 			quietly replace step = "`step'" in `no' 
 			quietly replace folder = "partial" in `no' 
 			quietly replace file       ="`partialfile'"               in `no'
