@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepidvars.ado: varlist which uniquely identify oberservations
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.3.11 14 September 2019 - soepidvars: introduce required variables in person scenario
 *! version 0.3.2 4 July 2017 - soepidsvars: return nothing, if no keyvar is found
 *!                             soepnextcons: use keyvars from complete file
 *! version 0.14 29 September 2016 - soepidvars: bugfix (ignore isid hhnr in personal files)
@@ -36,6 +37,7 @@ program define soepidvars, rclass
 
 * this variable lists contain the know id variables of all datasets
 * for datasets of persons, households and interviewers	
+local pidsreq persnr zvpnr vpnr persnre kidprofr persnrm
 local pids persnr zvpnr vpnr persnre kidprofr persnrm spellnr bioage mignr syear svyyear erhebj kennung hhnr
 local hids hhnrakt erhebj svyyear syear kennung spellnr mj hhnr
 local iids intnr intnr_tns intid intnum intid syear
@@ -47,12 +49,20 @@ local mastervars = r(varlist)
 local testiids : list iids & mastervars
 local testhids : list hids & mastervars
 local testpids : list pids & mastervars
+local testpidsreq : list pidsreq & mastervars
 if "`testpids'"=="hhnr" local testpids ""
 if "`verbose'"=="verbose" {
 	display "Found variables for each scenario:"
+	display "person required list: `testpidsreq'"
 	display "person: `testpids'"
 	display "household: `testhids'"
 	display "interviewer: `testiids'"
+}
+
+* if none of required variables for scenario person available, empty list for person scenario
+local numberpidsreq: word count `testpidsreq'
+if `numberpidsreq'==0 {
+	local testpids
 }
 
 * first the list for datasets of persons, then households, then interviewers

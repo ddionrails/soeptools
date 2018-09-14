@@ -14,12 +14,12 @@
 -------------------------------------------------------------------------------*/
 *! soepmergeclass.ado: merges value_templates to a variable
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-*! 20160623 version 0.9 23 June 2016 - introduce soepfitsclass.ado
+*! version 0.3.11 14 September 2019 - soepmergeclass: switch encoding (of ado), remove utf2cp option, switch default repo
 *! version 0.9 23 June 2016 - introduce soepfitsclass.ado
 
 program define soepmergeclass, rclass
-	version 13
-syntax varname [using/] , id(string) [verbose force utf2cp language(string)]
+	version 14
+syntax varname [using/] , id(string) [verbose force language(string)]
 
 *debug
 *local varlist "v_kldb2010raw"
@@ -28,16 +28,10 @@ syntax varname [using/] , id(string) [verbose force utf2cp language(string)]
 tempfile myfile
 quietly save `myfile', replace
 
-if "`using'"=="" local using "https://gitlab.soep.de/kwenzig/additionalmetadata/raw/master/templates/"
+if "`using'"=="" local using "https://git.soep.de/kwenzig/additionalmetadata/raw/master/templates/"
 
-if "`utf2cp'"=="utf2cp"{
-	soeputf2cp using "`using'/values_templates.csv", topath(tmpdir) copy verbose
-	return list
-	local using = r(path)
-}
-
-quietly import delimited "`using'values_templates.csv", delimiter(comma) varnames(1) ///
-	numericcols(1 2 3) stringcols (4 5 6) clear
+quietly import delimited "`using'/values_templates.csv", delimiter(comma) varnames(1) ///
+	numericcols(1 2 3) stringcols (4 5 6) clear encoding("utf-8")  
 
 if "`language'"	== "de" {
 	local language_suffix _de
@@ -56,9 +50,9 @@ keep _value _label
 isid _value
 
 tempfile thisclass
-quietly save `thisclass', replace // tempfile mit zul‰ssigen Angaben
+quietly save `thisclass', replace // tempfile mit zul√§ssigen Angaben
 
-* ‹berpr¸fung, ob nur zul‰ssige Angaben angenommen werden
+* √úberpr√ºfung, ob nur zul√§ssige Angaben angenommen werden
 quietly use `myfile', clear
 tempvar `value'
 generate _value = `varlist'
@@ -82,7 +76,7 @@ else {
 	display "_merge==1 are cases with values not from classification."
 	if "`force'"!="force" exit
 }
-* ‹berpr¸fung, ob nur zul‰ssige Angaben als value label definiert sind
+* √úberpr√ºfung, ob nur zul√§ssige Angaben als value label definiert sind
 quietly use `file', clear
 local lblname : value label `varlist'
 uselabel `lblname', clear

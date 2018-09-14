@@ -5,11 +5,12 @@ d (see http://ddionrails.org/soeptools/)
 d
 d Requires: Stata version 14 or newer
 d
-d Distribution-Date: 20180716
+d Distribution-Date: 20180914
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
 
+* version 0.3.11 14 September 2019 - soepidvars: introduce required variables, soepmergeclass: switch encoding
 * version 0.3.10 9 July 2018 - soepnextcons: bugfix in Behandlung mehrer partial files
 * version 0.3.6 9 July 2018 - soepnextcons: bugfix in warning; soepusemerge takes care of _ in suffixes
 * version 0.3.5 4 July 2018 - update for version 14 and above
