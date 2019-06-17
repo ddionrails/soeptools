@@ -19,7 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-*! version 0.4 June 17, 2019 - introduce soepinitdta und soepcompletemd, updates for v35
+*! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 *! version 0.3.6 9 July 2018 - soepnextcons: bugfix in warning; soepusemerge takes care of _ in suffixes
 *! version 0.3.5 4 July 2018 - update for version 14 and above
 *! version 0.2.3 16 Juni 2017 - soepusemerge: fix exception handling for non-fitting partials

@@ -19,12 +19,11 @@
 -------------------------------------------------------------------------------*/
 *! soepcompletemd.ado: extract metadata of variable and export
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-*! version xxx - initial release
+*! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 
 program define soepcompletemd, nclass
 	version 15 
 	syntax varname, targetfolder(string) [language(string) type(string) concept(string) after(varname) before(varname) study(string) dataset(string) version(string) template(numlist max=1) verbose]
-*	syntax varname, targetfolder(string) [language(string) type(string) concept(string) after(varname) before(varname) study(string) dataset(string) version(string) template() verbose]
 
 
 * the ado opens variables.csv and variabe_categories.csv and inserts the metadata from the variable

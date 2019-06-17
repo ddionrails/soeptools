@@ -19,7 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepallcons.ado: produce all consolidated from all partial and complete folders
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-*! version 0.4 June 17, 2019 - introduce soepinitdta und soepcompletemd, updates for v35
+*! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 *! version 0.3 26 Juni 2017 - introduce soepdatetime and write excel files with timestamp
 *! version 0.2.1 24 Mai 2017 - soepallcons: bugfix for emptyexcel exports
 *! version 0.2 31 Maerz 2017 - introduce soepallcons
