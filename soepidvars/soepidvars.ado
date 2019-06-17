@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepidvars.ado: varlist which uniquely identify oberservations
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.4 June 17, 2019 - introduce soepinitdta und soepcompletemd, updates for v35
 *! version 0.3.11 14 September 2019 - soepidvars: introduce required variables in person scenario
 *! version 0.3.2 4 July 2017 - soepidsvars: return nothing, if no keyvar is found
 *!                             soepnextcons: use keyvars from complete file
