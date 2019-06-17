@@ -1,18 +1,42 @@
 discard
-adopath ++ "D:/lokal/soeptools/soepidvars"
-adopath ++ "D:/lokal/soeptools/soepnextcons"
-adopath ++ "D:/lokal/soeptools/soepusemerge"
-adopath ++ "D:/lokal/soeptools/soepcomparelabel"
+adopath ++ "D:/lokal/soeptools/soepcompletemd"
+adopath ++ "D:/lokal/soeptools/soeptranslituml"
+adopath ++ "D:/lokal/soeptools/soepinitdta"
 adopath ++ "D:/lokal/soeptools/soepallcons"
+adopath ++ "D:/lokal/soeptools/soepnextcons"
+adopath ++ "D:/lokal/soeptools/soepidvars"
+adopath ++ "D:/lokal/soeptools/soepusemerge"
+
+soepinitdta, mdpath(https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bip/v35/) study(soep-core) version(v35) verbose
+
+soepinitdta, mdpath(D:\lokal\soeptools\test\soepinitdta\) study(soep-test) verbose
+
+quietly: import delimited "https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bgp_refugees/v35/variable_categories.csv", ///
+	delimiter(comma) bindquote(strict) case(preserve) ///
+	encoding(utf8) stringcols(_all) clear
+
+adopath ++ "D:/lokal/soeptools/soepcomparelabel"
+
 adopath ++ "D:/lokal/soeptools/soepdatetime"
+adopath ++ "D:/lokal/soeptools/soepfitsclass"
+adopath ++ "D:/lokal/soeptools/soepclassinfo"
+adopath ++ "D:/lokal/soeptools/soepinfra2ganze"
+adopath ++ "D:/lokal/soeptools/soepinfra2com"
+adopath ++ "D:/lokal/soeptools/soepkldb92mps"
+adopath ++ "D:/lokal/soeptools/soepmergeclass"
+adopath ++ "D:/lokal/soeptools/soepopenclass"
+
+
+soepusemerge "//hume/rdc-gen/consolidated/soep-core/soep.v34/consolidated1/bhmuki.dta" using "//hume/rdc-gen/generations/soep-core/soep.v34/partial1/", clear verbose compare
+
 set more off
-set trace off
+set trace on
 soepnextcons, version(v33t) step(1) verbose replace
 
 soepidvars, verbose
 return list
 
-soepallcons, version(v33) verbose replace
+soepallcons, version(v34) verbose replace
 
 soepdatetime
 local stamp `"`r(datetime)'"'
@@ -30,6 +54,8 @@ program define soepallcons, nclass
 soepnextcons, version(v33t) step(1) verbose replace
 
 soepusemerge "//hume/rdc-gen/consolidated/soep-core/soep.v33/consolidated2/ppfad.dta" using "//hume/rdc-gen/generations/soep-core/soep.v33/partial2/", clear verbose compare
+
+soepusemerge "//hume/rdc-gen/consolidated/soep-core/soep.v33t/consolidated1/bgpgen.dta" using "//hume/rdc-gen/generations/soep-core/soep.v33t/partial1/", clear verbose compare
 
 use "//hume/rdc-gen/consolidated/soep-core/soep.v33_test/consolidated1/wmuki2.dta", clear
 tempfile master
@@ -219,26 +245,6 @@ adopath ++ "D:/lokal/soeptools/soepdropchar"
 
 
 
-discard
-adopath ++ "D:/lokal/soeptools/soepfitsclass"
-
-discard
-adopath ++ "D:/lokal/soeptools/soepclassinfo"
-
-discard
-adopath ++ "D:/lokal/soeptools/soepinfra2ganze"
-
-discard
-adopath ++ "D:/lokal/soeptools/soepinfra2com"
-
-discard
-adopath ++ "D:/lokal/soeptools/soepkldb92mps"
-
-discard
-adopath ++ "D:/lokal/soeptools/soepmergeclass"
-
-discard
-adopath ++ "D:/lokal/soeptools/soepopenclass"
 
 
 

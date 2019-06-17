@@ -31,7 +31,7 @@
 
 program define soepnextcons, nclass
 	version 14 
-	syntax , version(string) step(integer) [humepath(string) verbose empty replace rsync timestamp(string)]
+	syntax , version(string) step(integer) [humepath(string) verbose empty replace arch rsync timestamp(string)]
 
 * check whether saveascii is installed
 quietly capture findfile saveascii.ado
@@ -51,7 +51,6 @@ if "`verbose'"=="verbose" {
 if "`verbose'"=="verbose" {
 	display "timestamp: `timestamp'"	
 }
-
 if "`humepath'"=="" {
 	if "`c(os)'`c(username)'"=="Unixjgoebel" {
 		local humepath "/mnt/"
@@ -63,10 +62,20 @@ if "`humepath'"=="" {
 
 local stepplus1 = `step'+1
 
-local consolidated = "`humepath'rdc-gen/consolidated/soep-core/soep.`version'/consolidated`step'/"
-local partial = "`humepath'rdc-gen/generations/soep-core/soep.`version'/partial`step'/"
-local complete = "`humepath'rdc-gen/generations/soep-core/soep.`version'/complete`step'/"
-local nextconsolidated = "`humepath'rdc-gen/consolidated/soep-core/soep.`version'/consolidated`stepplus1'/"
+if "`arch'"== "" {
+	local consolidated = "`humepath'rdc-gen/consolidated/soep-core/soep.`version'/consolidated`step'/"
+	local partial = "`humepath'rdc-gen/generations/soep-core/soep.`version'/partial`step'/"
+	local complete = "`humepath'rdc-gen/generations/soep-core/soep.`version'/complete`step'/"
+	local nextconsolidated = "`humepath'rdc-gen/consolidated/soep-core/soep.`version'/consolidated`stepplus1'/"
+}
+if "`arch'"== "arch" {
+	local consolidated = "`humepath'rdc-arch/consolidate/soep-core/`version'/consolidated`step'/"
+	local partial = "`humepath'rdc-arch/consolidate/soep-core/`version'/partial`step'/"
+	local complete = "`humepath'rdc-arch/consolidate/soep-core/`version'/complete`step'/"
+	local nextconsolidated = "`humepath'rdc-arch/consolidate/soep-core/`version'/consolidated`stepplus1'/"
+}
+
+
 /*
 if "`verbose'"=="verbose" {
 	display `"humepathpost: +`humepath'+"'
@@ -79,7 +88,7 @@ if "`verbose'"=="verbose" {
 */
 * option empty: delete dta-files in nextconsolidated folder
 if "`empty'"=="empty" {
-	local nextconsolidatedfiles : dir "`nextconsolidated'" files "*.dta"
+	local nextconsolidatedfiles : dir "`nextconsolidated'" files "*.dta", respectcase
 	if "`verbose'"=="verbose" {
 		display `"Files to delete in consolidated`stepplus1' folder: `nextconsolidatedfiles'"'
 	}
@@ -92,7 +101,7 @@ if "`empty'"=="empty" {
 
 * START: local partials: all partials_blabla.dta, with updates
 
-local partialnames : dir "`partial'" files "*_*.dta"
+local partialnames : dir "`partial'" files "*_*.dta", respectcase
 if "`verbose'"=="verbose" {
 	display `"Files in partial`step': `partialnames'"'
 }
@@ -142,7 +151,7 @@ if "`verbose'"=="verbose" {
 * END: local partials: all partials_blabla.dta, with updates
 
 * local consolidateds: alle files in consolidated
-local consolidateds : dir "`consolidated'" files "*.dta"
+local consolidateds : dir "`consolidated'" files "*.dta", respectcase
 local consolidateds : subinstr local consolidateds ".dta" "", all
 local consolidateds : subinstr local consolidateds `"""' "", all
 if "`verbose'"=="verbose" {
@@ -150,7 +159,7 @@ if "`verbose'"=="verbose" {
 }
 
 * local complete: alle files in complete
-local completes : dir "`complete'" files "*.dta"
+local completes : dir "`complete'" files "*.dta", respectcase
 local completes : subinstr local completes ".dta" "", all
 local completes : subinstr local completes `"""' "", all
 if "`verbose'"=="verbose" {
@@ -277,7 +286,8 @@ foreach file of local completes {
 		quietly ds
 		local compvarlist = r(varlist)
 		local keepvarlist "`compvarlist'"
-		quietly soepidvars, `verbose'
+		display "dataset: `file'"
+		quietly soepidvars, dataset(`file') `verbose'
 		local keyvars = r(idvars)
 		display "keyvars: `keyvars'"
 		local navarlist 
@@ -373,7 +383,7 @@ foreach file of local consolidatedremain {
 * 3. alle files, für die es partial gibt, mit den partials verbinden
 
 * local nextconsolidateds: alle files in nextconsolidated
-local nextconsolidateds : dir "`nextconsolidated'" files "*.dta"
+local nextconsolidateds : dir "`nextconsolidated'" files "*.dta", respectcase
 local nextconsolidateds : subinstr local nextconsolidateds ".dta" "", all
 local nextconsolidateds : subinstr local nextconsolidateds `"""' "", all
 if "`verbose'"=="verbose" {
@@ -402,7 +412,9 @@ foreach file of local partials {
 		if "`hasconsolidated'"=="0"{
 			continue
 		}
-		soepusemerge "`nextconsolidated'`file'.dta" using "`partial'", clear
+		quietly soepidvars, dataset (`file') `verbose'
+		local keyvars = r(idvars)
+		soepusemerge "`nextconsolidated'`file'.dta" using "`partial'", clear keyvars(`keyvars')
 		quietly saveascii "`nextconsolidated'`file'", replace version(12)
 		quietly use `partialresults', clear
 		quietly keep if master==""

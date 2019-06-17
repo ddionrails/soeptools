@@ -3,14 +3,15 @@ d
 d text 
 d (see http://ddionrails.org/soeptools/) 
 d
-d Requires: Stata version 14 or newer
+d Requires: Stata version 15 or newer
 d
-d Distribution-Date: 20180914
+d Distribution-Date: 20190617
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
 
-* version 0.3.11 14 September 2019 - soepidvars: introduce required variables, soepmergeclass: switch encoding
+* version 0.4 June 17, 2019 - introduce soepinitdta und soepcompletemd, updates for v35
+* version 0.3.11 14 September 2018 - soepidvars: introduce required variables, soepmergeclass: switch encoding
 * version 0.3.10 9 July 2018 - soepnextcons: bugfix in Behandlung mehrer partial files
 * version 0.3.6 9 July 2018 - soepnextcons: bugfix in warning; soepusemerge takes care of _ in suffixes
 * version 0.3.5 4 July 2018 - update for version 14 and above
@@ -45,11 +46,13 @@ f soepallcons/soepallcons.ado
 f soepapplyvaluelabel/soepapplyvaluelabel.ado
 f soepapplyvaluelabel/soepapplyvaluelabel.sthlp
 f soepcomparelabel/soepcomparelabel.ado
+f soepcompletemd/soepcompletemd.ado
 f soepdatetime/soepdatetime.ado
 f soepdropchar/soepdropchar.ado
 f soepdropchar/soepdropchar.sthlp
 f soepidvars/soepidvars.ado
 f soepidvars/soepidvars.sthlp
+f soepinitdta/soepinitdta.ado
 f soepgenpre/soepgenpre.ado
 f soepgenpre/soepgenpre.sthlp
 f soepnextcons/soepnextcons.ado

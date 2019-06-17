@@ -25,7 +25,7 @@
 
 program define soepallcons, nclass
 	version 13 
-	syntax , version(string) [humepath(string) verbose empty replace rsync]
+	syntax , version(string) [humepath(string) verbose empty replace arch rsync]
 
 if "`verbose'"=="verbose" {
 	display `"version:`version':"'
@@ -40,14 +40,20 @@ if "`humepath'"=="" {
 	}
 }
 
-local genroot =  "`humepath'rdc-gen/generations/soep-core/soep.`version'/"
-local consroot = "`humepath'rdc-gen/consolidated/soep-core/soep.`version'/"
+if "`arch'"== "" {
+	local genroot =  "`humepath'rdc-gen/generations/soep-core/soep.`version'/"
+	local consroot = "`humepath'rdc-gen/consolidated/soep-core/soep.`version'/"
+}
+if "`arch'"== "arch" {
+	local genroot =  "`humepath'rdc-arch/consolidate/soep-core/`version'/"
+	local consroot = "`humepath'rdc-arch/consolidate/soep-core/`version'/"
+}
 
 local types "partial complete consolidated"
 foreach type of local types {
 	local root = "`genroot'"
 	if "`type'"=="consolidated" local root = "`consroot'"
-	local suffixes : dir "`root'" dirs "`type'*"
+	local suffixes : dir "`root'" dirs "`type'*", respectcase
 	local suffixes : list clean suffixes
 	local suffixes : subinstr local suffixes "`type'" "", all count(local dirsno)
 	forvalues n = 1/`dirsno' {
@@ -82,7 +88,7 @@ forvalues step = 1/`steps' {
 	if "`verbose'"=="verbose" {
 		display "Processing step `step'."
 	}
-	soepnextcons, version(`version') step(`step') `empty' `replace' `rsync' `verbose' timestamp(`timestamp')
+	soepnextcons, version(`version') step(`step') `empty' `replace' `rsync' `verbose' `arch' timestamp(`timestamp')
 	local types "partial complete"
 	foreach type of local types {
 		tempfile `type'sheet`step'

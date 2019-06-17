@@ -93,7 +93,7 @@ if "`verbose'"=="verbose" {
 	desc
 }
 
-local mergefilesraw : dir "`using'" files "`fileroot'_*.dta"
+local mergefilesraw : dir "`using'" files "`fileroot'_*.dta", respectcase
 if "`verbose'"=="verbose" {
 	display `"Files to merge: `mergefilesraw'"'
 }
