@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepcompletemd.ado: extract metadata of variable and export
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.4.1 June 18, 2019 - update soepcompletemd
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 
 program define soepcompletemd, nclass
@@ -69,6 +70,12 @@ local vallabel : value label `varlist'
 display "vallabel: `vallabel'"
 
 uselabel `vallabel', replace
+* if-statement needed for datasets without any value labels
+if _N ==0 {
+	sysuse auto, clear
+	uselabel _all, replace
+	keep if value==-1
+}
 if "`vallabel'"=="" keep if lname==""
 keep value label
 gen valuestring = string(value)
