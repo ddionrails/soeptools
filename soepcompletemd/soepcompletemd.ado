@@ -24,7 +24,7 @@
 
 program define soepcompletemd, nclass
 	version 15 
-	syntax varname, targetfolder(string) [language(string) type(string) concept(string) after(varname) before(varname) study(string) dataset(string) version(string) template(numlist max=1) verbose]
+	syntax varname, targetfolder(string) [language(string) type(string) concept(string) after(string) before(string) study(string) dataset(string) version(string) template(numlist max=1) verbose]
 
 
 * the ado opens variables.csv and variabe_categories.csv and inserts the metadata from the variable
