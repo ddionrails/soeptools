@@ -19,7 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soeptranslituml.ado: transliteration for umlauts and other non-ascii-chars
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-*! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
+*! version 0.4.2 July 8, 2019 - introduce soeptranslituml
 
 program define soeptranslituml, nclass
 	version 15 
