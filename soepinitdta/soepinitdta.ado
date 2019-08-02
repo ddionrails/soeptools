@@ -19,7 +19,8 @@
 -------------------------------------------------------------------------------*/
 *! soepinitdta.ado: init dataset from metadata
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-*! version xxx - initial release
+* version 0.4.3 August 2, 2019 - soepinitdta: make key vars from list long
+* version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, updates for v35
 
 program define soepinitdta, nclass
 	version 15 
@@ -42,6 +43,20 @@ if "`verbose'"=="verbose" {
 	display "dataset: `dataset'"
 	display "version: `version'"
 	display "verbose: `verbose'"
+}
+
+* store all possible names of keyvariables to local keys
+quietly: import delimited "https://git.soep.de/kwenzig/publicecoredoku/raw/master/meta/logical_datasets.csv", ///
+				delimiter(comma) bindquote(strict) case(preserve) ///
+				encoding(utf8) stringcols(_all) clear
+quietly: keep if primary_keys!=""
+quietly: keep primary_keys
+quietly: duplicates drop primary_keys , force
+quietly: levelsof primary_keys, clean local(keys)
+local keys : list uniq keys
+
+if "`verbose'"=="verbose" {
+	display "Key variables form logical_dtaasets.csv: `keys'."
 }
 
 * restrict on attributes from options (study, dataset, version) and assert that
@@ -193,12 +208,19 @@ forvalues row = 1/`numberofvars' {
 				local type = "byte"
 				}			
 			local variable = "`var_`row''"
-			if inlist("`variable'","pid","hid","syear","pnrfest","hhnrakt","hhnr","persnr","hhnrakt","spellnr") | ///
-				inlist("`variable'","vpnr","kennung","survey_year","no_of_treatment","vpersnr","bikennung","bioage","bisurvey_year","bino_of_treatment") | ///
-				inlist("`variable'","cid","intnum","intnr","biintid","intid","intnr_tns","mignr","mj","vpid") | ///
-				inlist("`variable'","zvpnr","persnre","bivpnr"){
+			local temppos : subinstr local keys "`variable'" "", all word count(local tempnumber)
+			*local found = `tempnumber'>0
+			*display "found `found'"
+			*if inlist("`variable'","pid","hid","syear","pnrfest","hhnrakt","hhnr","persnr","hhnrakt","spellnr") | ///
+			*	inlist("`variable'","vpnr","kennung","survey_year","no_of_treatment","vpersnr","bikennung","bioage","bisurvey_year","bino_of_treatment") | ///
+			*	inlist("`variable'","cid","intnum","intnr","biintid","intid","intnr_tns","mignr","mj","vpid") | ///
+			*   inlist("`variable'","zvpnr","persnre","bivpnr"){
+			if `tempnumber'>0 {
 				local type = "long"
 				local format "%12.0g"
+				if "`verbose'"=="verbose" {
+					display "Key variable `variable' set to long."
+				}
 			}
 			local label = `"`label_`row''"'
 			if "`type'"=="str" {
