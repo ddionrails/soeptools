@@ -19,6 +19,8 @@
 -------------------------------------------------------------------------------*/
 *! soepinitdta.ado: init dataset from metadata
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+
+* version 0.4.5 August 8, 2019 - soepinitdta: ad space to numlabel
 * version 0.4.3 August 2, 2019 - soepinitdta: make key vars from list long
 * version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, updates for v35
 
@@ -26,7 +28,15 @@ program define soepinitdta, nclass
 	version 15 
 	syntax, mdpath(string) [study(string) dataset(string) version(string) soepstyle verbose]
 	
-
+/* for debugging
+local mdpath "https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bijugend/v35/"
+local study "soep-core"
+local dataset "bijugend"
+local version "v35"
+local soepstyle soepstyle
+local verbose verbose
+*/
+	
 * the ado opens variables.csv and variabe_categories.csv and constructs an empty
 * dta-file 
 
@@ -171,6 +181,9 @@ if `numberofrows'>0 {
 			*display "define: `valuevar_`varorder''"
 			*display "varorder: `varorder'"
 			label define `valuevar_`varorder'' `value_`varorder'_`valueorder'' `"`label_`varorder'_`valueorder''"', add
+			*if "`valuevar_`varorder''"=="bij_30_q121" {
+			*	display "`valuevar_`varorder'' `value_`varorder'_`valueorder'' `label_`varorder'_`valueorder''"
+			*}
 		}
 	}
 	if "`verbose'"=="verbose" {
@@ -181,8 +194,10 @@ else {
 	if "`verbose'"=="verbose" {
 		display "No value labels."
 	}
-
 }
+
+label list bij_30_q121
+
 * neuen Datensatz erzeugen
 if "`verbose'"=="verbose" {
 	display "Create dataset."
@@ -235,7 +250,7 @@ forvalues row = 1/`numberofvars' {
 
 if "`soepstyle'"=="soepstyle" {
 	numlabel, remove mask("[#]") force
-	numlabel, add mask("[#]") force
+	numlabel, add mask("[#] ") force
 }
 
 if "`verbose'"=="verbose" {
