@@ -5,11 +5,12 @@ d (see http://ddionrails.org/soeptools/)
 d
 d Requires: Stata version 15 or newer
 d
-d Distribution-Date: 20190802
+d Distribution-Date: 20190808
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
 
+* version 0.4.4 August 8, 2019 - soepallcons: debug for folder number > 9
 * version 0.4.3 August 2, 2019 - soepinitdta: make key vars from list long
 * version 0.4.2 July 8, 2019 - introduce soeptranslituml
 * version 0.4.1 June 18, 2019 - update soepcompletemd

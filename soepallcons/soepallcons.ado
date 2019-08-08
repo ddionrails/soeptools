@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepallcons.ado: produce all consolidated from all partial and complete folders
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.4.4 August 8, 2019 - soepallcons: debug for folder number > 9
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 *! version 0.3 26 Juni 2017 - introduce soepdatetime and write excel files with timestamp
 *! version 0.2.1 24 Mai 2017 - soepallcons: bugfix for emptyexcel exports
@@ -57,14 +58,16 @@ foreach type of local types {
 	local suffixes : dir "`root'" dirs "`type'*", respectcase
 	local suffixes : list clean suffixes
 	local suffixes : subinstr local suffixes "`type'" "", all count(local dirsno)
+	local test
 	forvalues n = 1/`dirsno' {
-		local suffix : word `n' of `suffixes'
-		capture assert `n'==`suffix'
-		if _rc!=0 {
-			display as error "`type' folders not enumerated correctly in increasing order."
-			exit 9			
-		}
+		local test = "`n' `test'"
 	}
+	local sameelements: list test === suffixes
+	if `sameelements'==0 {
+		display as error "`type' folders not enumerated correctly in increasing order."
+		exit 9			
+	}
+	
 	local `type'max = `dirsno'
 	if "`verbose'"=="verbose" {
 		display "``type'max' highest suffix for `type' folders."
