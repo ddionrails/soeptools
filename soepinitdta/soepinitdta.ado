@@ -20,6 +20,7 @@
 *! soepinitdta.ado: init dataset from metadata
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
 
+* version 0.4.6 August 27, 2019 - soepinitdta: del line
 * version 0.4.5 August 8, 2019 - soepinitdta: ad space to numlabel
 * version 0.4.3 August 2, 2019 - soepinitdta: make key vars from list long
 * version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, updates for v35
@@ -195,8 +196,6 @@ else {
 		display "No value labels."
 	}
 }
-
-label list bij_30_q121
 
 * neuen Datensatz erzeugen
 if "`verbose'"=="verbose" {
