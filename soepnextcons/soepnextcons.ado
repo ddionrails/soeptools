@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepnextcons.ado: consolidate complete+partial+consolidated for next consolidated
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.4.7 November 11, 2019 - soepnextcons: use option nolable nonotes for append
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 *! version 0.3.10 9 July 2018 - soepnextcons: bugfix in Behandlung mehrer partial files
 *! version 0.3.6 9 July 2018 - soepnextcons: bugfix in warning; soepusemerge takes care of _ in suffixes
@@ -325,7 +326,7 @@ foreach file of local completes {
 			quietly save `toappend', replace
 			quietly use `consolidatedfile', clear
 			* desc
-			quietly append using `toappend'
+			quietly append using `toappend', nolabel nonotes
 			* desc
 			quietly saveascii `nextconsolidated'`file', replace version(12)
 		}

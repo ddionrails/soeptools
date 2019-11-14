@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.4.7 November 11, 2019 - soepusermerge: use option nolable nonotes for merging
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 *! version 0.3.6 9 July 2018 - soepnextcons: bugfix in warning; soepusemerge takes care of _ in suffixes
 *! version 0.3.5 4 July 2018 - update for version 14 and above

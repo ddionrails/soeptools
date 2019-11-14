@@ -7,8 +7,18 @@ adopath ++ "D:/lokal/soeptools/soepnextcons"
 adopath ++ "D:/lokal/soeptools/soepidvars"
 adopath ++ "D:/lokal/soeptools/soepusemerge"
 
-soepinitdta, mdpath(https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bip/v35/) study(soep-core) version(v35) verbose
+set trace off
+soepinitdta, mdpath(https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bhp_kind7/v35/) study(soep-core) version(v35) verbose
 
+
+quietly: import delimited "https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bcbfk/v35/variables.csv", ///
+	delimiter(comma) bindquote(strict) case(preserve) ///
+	encoding(utf8) stringcols(_all) clear
+	
+	
+set trace off
+discard
+adopath ++ "D:/lokal/soeptools/soepinitdta"
 soepinitdta, mdpath(D:\lokal\soeptools\test\soepinitdta\) study(soep-test) verbose
 
 quietly: import delimited "https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bgp_refugees/v35/variable_categories.csv", ///

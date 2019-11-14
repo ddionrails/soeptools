@@ -20,6 +20,7 @@
 *! soepinitdta.ado: init dataset from metadata
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
 
+* version 0.4.7 November 11, 2019 - soepinitdta: bilingual, replace inefficient numlabel command
 * version 0.4.6 August 27, 2019 - soepinitdta: del line
 * version 0.4.5 August 8, 2019 - soepinitdta: ad space to numlabel
 * version 0.4.3 August 2, 2019 - soepinitdta: make key vars from list long
@@ -29,10 +30,11 @@ program define soepinitdta, nclass
 	version 15 
 	syntax, mdpath(string) [study(string) dataset(string) version(string) soepstyle verbose]
 	
-/* for debugging
-local mdpath "https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bijugend/v35/"
+/*
+for debugging
+local mdpath "https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bflela/v35/"
 local study "soep-core"
-local dataset "bijugend"
+local dataset "bflela"
 local version "v35"
 local soepstyle soepstyle
 local verbose verbose
@@ -108,13 +110,24 @@ if "`soepstyle'"=="soepstyle" {
 	soeptranslituml label label_de
 }
 
+* leere englische labels durch deutsche ersetzem
+replace label="[de] "+label_de if label=="" & label_de!=""
+
+* leere deutsche labels durch englische ersetzem
+replace label_de="[en] "+label if label_de=="" & label!=""
+
+
+
 forvalues row = 1/`numberofvars' {
 			local var_`row' = variable[`row']
 			local type_`row' = type[`row']			
 			* Workaround for backticks in Label
 			local labeltext = label_de[`row']
 			local labeltext: subinstr local labeltext  "`" "'"
-			local label_`row' = `"`labeltext'"'
+			local label_de_`row' = `"`labeltext'"'
+			local labeltext = label[`row']
+			local labeltext: subinstr local labeltext  "`" "'"
+			local label_en_`row' = `"`labeltext'"'
 }
 
 gen varorder = _n
@@ -141,52 +154,96 @@ rename value valuestring
 gen value=real(valuestring)
 drop valuestring
 
-* Umlaute ausschreiben
+* Umlaute ausschreiben und numlabel ersetzen
 if "`soepstyle'"=="soepstyle" {
 	soeptranslituml label label_de
+	gen soepnumlabel = "["+string(value)+"] "
+
+	gen pos = ustrpos(label_de,soepnumlabel)
+	clonevar label_new = label_de
+	replace label_new = usubinstr(label_new,soepnumlabel,"",1) if pos==1
+	replace label_new = soepnumlabel + label_new
+	drop label_de pos
+	rename label_new label_de
+
+	gen pos = ustrpos(label,soepnumlabel)
+	clonevar label_new = label
+	replace label_new = usubinstr(label_new,soepnumlabel,"",1) if pos==1
+	replace label_new = soepnumlabel + label_new
+	drop label pos
+	rename label_new label
 }
 
-* nur die Zeilen behalten, die zur variables passen
+* leere englische labels durch deutsche ersetzem
+replace label="[de] "+label_de if label=="" & label_de!=""
+
+* leere deutsche labels durch englische ersetzem
+replace label_de="[en] "+label if label_de=="" & label!=""
+
+
+* nur die Zeilen behalten, die zur variables passen, damit kommt varorder rein
 quietly: merge m:1 study dataset version variable using `nonstringvariables', keep(match) nogen
 
 isid study dataset version variable value
 
+
+
 sort varorder value
 bysort varorder: gen valueorder=_n
 bysort varorder: gen noofvalues=_N
+if _N>0{
+	egen labelorder = group(varorder)
+} 
+else {
+	clonevar labelorder = varorder
+}
 local numberofrows = _N
+summarize labelorder, meanonly 
+local nooflabels = r(max)
+
+*       labelorder varorder  nofvalues  valueorder  value  label_de label
+* var1      1         1          2          1         1
+* var1      1         1          2          2         6
+* var3      2         3          1          1        -1
+
+* auskommentiert am 8.11.
+* tempfile variable_categories
+* save `variable_categories', replace
 
 if `numberofrows'>0 {
 	forvalues row = 1/`numberofrows' {
-		local varorder = varorder[`row']
+		local labelorder = labelorder[`row']
+		local varorder_`labelorder' = varorder[`row']
 		local valueorder = valueorder[`row']
+		local varorder = varorder[`row']
 		local valuevar_`varorder' = variable[`row']
+		local noofvalues_`varorder' = noofvalues[`row']
 		local value_`varorder'_`valueorder' = value[`row']			
 		* Workaround for backticks in Label
 		local labeltext = label_de[`row']
 		local labeltext: subinstr local labeltext  "`" "'"
-		local label_`varorder'_`valueorder' = `"`labeltext'"'
+		local label_de_`varorder'_`valueorder' = `"`labeltext'"'
+		local labeltext = label[`row']
+		local labeltext: subinstr local labeltext  "`" "'"
+		local label_en_`varorder'_`valueorder' = `"`labeltext'"'
 	}
-
-	keep varorder noofvalues
-	quietly: duplicates drop _all, force
-	local numberofrows = _N
 
 	* alle Value-Labels erzeugen
 	label drop _all  
 	
-	forvalues labelno = 1/`numberofrows' {
-		local varorder = varorder[`labelno']
-		local noofvalues = noofvalues[`labelno']
+	forvalues labelno = 1/`nooflabels' {
+		local varorder = `varorder_`labelno''
+		local noofvalues = `noofvalues_`varorder''
 		forvalues valueorder = 1/`noofvalues' {
 			*display "define: `valuevar_`varorder''"
 			*display "varorder: `varorder'"
-			label define `valuevar_`varorder'' `value_`varorder'_`valueorder'' `"`label_`varorder'_`valueorder''"', add
+			label define `valuevar_`varorder'' `value_`varorder'_`valueorder'' `"`label_de_`varorder'_`valueorder''"', add
 			*if "`valuevar_`varorder''"=="bij_30_q121" {
 			*	display "`valuevar_`varorder'' `value_`varorder'_`valueorder'' `label_`varorder'_`valueorder''"
 			*}
 		}
 	}
+	
 	if "`verbose'"=="verbose" {
 		display "variable_categories.csv opened and processed."
 	}
@@ -236,7 +293,7 @@ forvalues row = 1/`numberofvars' {
 					display "Key variable `variable' set to long."
 				}
 			}
-			local label = `"`label_`row''"'
+			local label = `"`label_de_`row''"'
 			if "`type'"=="str" {
 				gen `type' `variable'= ""
 			}
@@ -246,11 +303,49 @@ forvalues row = 1/`numberofvars' {
 			}
 			label variable `variable' `"`label'"'
 }
-
+/*
 if "`soepstyle'"=="soepstyle" {
 	numlabel, remove mask("[#]") force
 	numlabel, add mask("[#] ") force
 }
+*/
+* german labels now ready
+
+* apply english labels
+label language DE, rename
+
+
+label language EN, new
+
+forvalues row = 1/`numberofvars' {
+			local variable = "`var_`row''"
+			local label = `"`label_en_`row''"'
+			label variable `variable' `"`label'"'
+}
+
+* `numberofrows' ist Anzahl der Zeilen in var_cat
+if `numberofrows'>0 {  
+forvalues labelno = 1/`nooflabels' {
+	local varorder = `varorder_`labelno''
+	local noofvalues = `noofvalues_`varorder''
+	forvalues valueorder = 1/`noofvalues' {
+	*display "define: `valuevar_`varorder''"
+	*display "varorder: `varorder'"
+	label define `valuevar_`varorder''_EN `value_`varorder'_`valueorder'' `"`label_en_`varorder'_`valueorder''"', add
+	label values `valuevar_`varorder'' `valuevar_`varorder''_EN
+	*if "`valuevar_`varorder''"=="bij_30_q121" {
+	*	display "`valuevar_`varorder'' `value_`varorder'_`valueorder'' `label_`varorder'_`valueorder''"
+	*}
+	}
+}
+}
+/*
+if "`soepstyle'"=="soepstyle" {
+	numlabel, remove mask("[#]") force
+	numlabel, add mask("[#] ") force
+}
+*/
+label language DE
 
 if "`verbose'"=="verbose" {
 	display "New dataset available."
