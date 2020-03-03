@@ -5,11 +5,12 @@ d (see http://ddionrails.org/soeptools/)
 d
 d Requires: Stata version 15 or newer
 d
-d Distribution-Date: 20191111
+d Distribution-Date: 20200303
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
 
+* version 0.4.8 March 3, 2020 - soepinitdta: english valulabels are correctly replaced by german one if empty
 * version 0.4.7 November 11, 2019 - soepinitdta: bilingual, replace inefficient numlabel command, soepusermerge/soepnextcons: use option nolable nonotes
 * version 0.4.6 August 27, 2019 - soepinitdta: del line
 * version 0.4.5 August 8, 2019 - soepinitdta: ad space to numlabel

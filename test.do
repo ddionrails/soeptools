@@ -8,12 +8,16 @@ adopath ++ "D:/lokal/soeptools/soepidvars"
 adopath ++ "D:/lokal/soeptools/soepusemerge"
 
 set trace off
-soepinitdta, mdpath(https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bhp_kind7/v35/) study(soep-core) version(v35) verbose
+soepinitdta, mdpath(https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bhkind/v35/) study(soep-core) version(v35) verbose
 
 
 quietly: import delimited "https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bcbfk/v35/variables.csv", ///
 	delimiter(comma) bindquote(strict) case(preserve) ///
 	encoding(utf8) stringcols(_all) clear
+
+	
+set trace on
+soepnextcons, version(v35) step(1) verbose arch replace
 	
 	
 set trace off
@@ -254,6 +258,19 @@ discard
 adopath ++ "D:/lokal/soeptools/soepdropchar"
 
 
+
+tempfile leerdatensatz
+soepinitdta, mdpath(https://git.soep.de/kwenzig/soepmorepublic/raw/master/datasets/more_local/) dataset(more_local) study(soep-more) version(2020) verbose
+save `leerdatensatz', replace
+
+use "//hume/soep-data/MA/mkrieger/austausch/more_local.dta", clear
+* alle charachteristics und labels löschen
+soepdropchar, dataset
+label drop _all
+* damit commen die initialisierten labels wieder rein
+append using `leerdatensatz'
+
+save "//hume/soep-data/MA/mkrieger/austausch/more_local.dta", replace
 
 
 

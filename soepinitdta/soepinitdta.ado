@@ -20,6 +20,7 @@
 *! soepinitdta.ado: init dataset from metadata
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
 
+* version 0.4.8 March 3, 2020 - soepinitdta: english valulabels are correctly replaced by german one if empty
 * version 0.4.7 November 11, 2019 - soepinitdta: bilingual, replace inefficient numlabel command
 * version 0.4.6 August 27, 2019 - soepinitdta: del line
 * version 0.4.5 August 8, 2019 - soepinitdta: ad space to numlabel
@@ -32,9 +33,9 @@ program define soepinitdta, nclass
 	
 /*
 for debugging
-local mdpath "https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bflela/v35/"
+local mdpath "https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/hl/v35/"
 local study "soep-core"
-local dataset "bflela"
+local dataset "hl"
 local version "v35"
 local soepstyle soepstyle
 local verbose verbose
@@ -154,6 +155,13 @@ rename value valuestring
 gen value=real(valuestring)
 drop valuestring
 
+* leere englische labels durch deutsche ersetzem
+replace label="[de] "+label_de if label=="" & label_de!=""
+
+* leere deutsche labels durch englische ersetzem
+replace label_de="[en] "+label if label_de=="" & label!=""
+
+
 * Umlaute ausschreiben und numlabel ersetzen
 if "`soepstyle'"=="soepstyle" {
 	soeptranslituml label label_de
@@ -173,13 +181,6 @@ if "`soepstyle'"=="soepstyle" {
 	drop label pos
 	rename label_new label
 }
-
-* leere englische labels durch deutsche ersetzem
-replace label="[de] "+label_de if label=="" & label_de!=""
-
-* leere deutsche labels durch englische ersetzem
-replace label_de="[en] "+label if label_de=="" & label!=""
-
 
 * nur die Zeilen behalten, die zur variables passen, damit kommt varorder rein
 quietly: merge m:1 study dataset version variable using `nonstringvariables', keep(match) nogen
