@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5 April 9, 2020 - soepallcons, soepnextcons, soepmerge erfordern jetzt dta 118
 *! version 0.4.7 November 11, 2019 - soepusermerge: use option nolable nonotes for merging
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 *! version 0.3.6 9 July 2018 - soepnextcons: bugfix in warning; soepusemerge takes care of _ in suffixes
@@ -66,7 +67,7 @@ if "`verbose'"=="verbose" {
 }
 ereturn local masterfile `fileroot'
 tempfile usefile
-quietly useold "`filepath'/`fileroot'", clear
+quietly use "`filepath'/`fileroot'", clear
 quietly ds
 local mastervars = r(varlist)
 if "`verbose'"=="verbose" {
@@ -162,23 +163,23 @@ foreach fileno of numlist 1/`filescount' {
 	local file`fileno'_status "OK"
 	local file`fileno'_message
 	
-	if `dversion' > 117 {
+	if !inlist(`dversion', 118, 119) {
 		local file`fileno'_status "ERROR"
-		local file`fileno'_message "`file`fileno'_message'File is dta_`dversion', not Stata 12 (115). "
+		local file`fileno'_message "`file`fileno'_message'File is dta_`dversion', not Stata 14/15 (118,119). "
 		if "`verbose'"=="verbose" {
-			display "ERROR: File is dta_`dversion', more recent than Stata 13 (117)."
+			display "ERROR: File is dta_`dversion', not Stata 14/15 (118, 119)."
 		}
 	}
-	else if `dversion' != 115 {
+	else if `dversion' == 119 {
 		local file`fileno'_status "Warning"
-		local file`fileno'_message "`file`fileno'_message'File is dta_`dversion', not Stata 12 (115). "
+		local file`fileno'_message "`file`fileno'_message'File is dta_`dversion', not Stata 15 with less than 32767 variables (118). "
 		if "`verbose'"=="verbose" {
-			display "Warning: File is dta_`dversion', e.g. Stata 13 (117) or older than Stata 12 (115)"
+			display "Warning: File is dta_`dversion', not Stata 14/15 with less than 32767 variables (118)."
 		}
 	}
 	if "`file`fileno'_status'"!="ERROR" {
 		tempfile mergefile`fileno'
-		quietly useold "`using'/`file'", clear
+		quietly use "`using'/`file'", clear
 		quietly save `mergefile`fileno'', replace
 		quietly ds
 		local varlist = r(varlist)

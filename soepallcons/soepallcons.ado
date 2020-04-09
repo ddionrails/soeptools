@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepallcons.ado: produce all consolidated from all partial and complete folders
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5 April 9, 2020 - soepallcons, soepnextcons, soepmerge erfordern jetzt dta 118
 *! version 0.4.4 August 8, 2019 - soepallcons: debug for folder number > 9
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 *! version 0.3 26 Juni 2017 - introduce soepdatetime and write excel files with timestamp
@@ -26,7 +27,7 @@
 *! version 0.2 31 Maerz 2017 - introduce soepallcons
 
 program define soepallcons, nclass
-	version 13 
+	version 14 
 	syntax , version(string) [humepath(string) verbose empty replace arch rsync]
 
 if "`verbose'"=="verbose" {

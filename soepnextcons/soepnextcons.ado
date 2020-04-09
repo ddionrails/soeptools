@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepnextcons.ado: consolidate complete+partial+consolidated for next consolidated
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5 April 9, 2020 - soepallcons, soepnextcons, soepmerge erfordern jetzt dta 118
 *! version 0.4.7 November 11, 2019 - soepnextcons: use option nolable nonotes for append
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 *! version 0.3.10 9 July 2018 - soepnextcons: bugfix in Behandlung mehrer partial files
@@ -35,6 +36,7 @@ program define soepnextcons, nclass
 	version 14 
 	syntax , version(string) step(integer) [humepath(string) verbose empty replace arch rsync timestamp(string)]
 
+/* check not necessary anymore
 * check whether saveascii is installed
 quietly capture findfile saveascii.ado
 if "`r(fn)'" == "" {
@@ -42,7 +44,7 @@ if "`r(fn)'" == "" {
          di as txt "use -ssc install saveascii- to do that"
          exit 498
 }	
-	
+*/	
 	
 /*
 if "`verbose'"=="verbose" {
@@ -258,20 +260,20 @@ foreach file of local completes {
 		local status "ERROR"
 		local message "`message' NOT found in consolidated`step'. "
 	}
-	else if `dversion' > 117 {
+	else if !inlist(`dversion', 118, 119) {
 		local status "ERROR"
-		local message "`message'File is dta_`dversion', not Stata 12 (115). "
+		local message "`message'File is dta_`dversion', not Stata 14/15 (118,119). "
 		* instead copy file form consolidated
 		local consolidatedremain `consolidatedremain' `file'
 	}
 	else {
-		if `dversion'==117 | `dversion'<115{
+		if `dversion'==119 {
 			local status "Warning"
-			local message "`message'File is dta_`dversion', not Stata 12 (115). "
+			local message "`message'File is dta_`dversion', not Stata 15 with less than 32767 variables (118). "
 		}
 		* empty consolidated file and write to tempfile consolidatedfile
 		* - will become master for append
-		quietly useold `consolidated'`file', clear
+		quietly use `consolidated'`file', clear
 		quietly ds
 		local consvarlist = r(varlist)
 		tempvar drophelp
@@ -284,7 +286,7 @@ foreach file of local completes {
 		tempfile consolidatedfile
 		quietly save `consolidatedfile', replace
 		
-		quietly useold `complete'`file', clear
+		quietly use `complete'`file', clear
 		quietly ds
 		local compvarlist = r(varlist)
 		local keepvarlist "`compvarlist'"
@@ -328,7 +330,7 @@ foreach file of local completes {
 			* desc
 			quietly append using `toappend', nolabel nonotes
 			* desc
-			quietly saveascii `nextconsolidated'`file', replace version(12)
+			quietly save `nextconsolidated'`file', replace
 		}
 		else {
 			local status "ERROR"
@@ -417,7 +419,7 @@ foreach file of local partials {
 		quietly soepidvars, dataset (`file') `verbose'
 		local keyvars = r(idvars)
 		soepusemerge "`nextconsolidated'`file'.dta" using "`partial'", clear keyvars(`keyvars')
-		quietly saveascii "`nextconsolidated'`file'", replace version(12)
+		quietly save "`nextconsolidated'`file'", replace
 		quietly use `partialresults', clear
 		quietly keep if master==""
 		if `e(usingfilesno)'>0 {
