@@ -1,6 +1,6 @@
 /*-------------------------------------------------------------------------------
   soepclassinfo.ado: Displays info of a list of classification ids
-    Copyright (C) 2016  Knut Wenzig (kwenzig@diw.de)
+    Copyright (C) 2020  Knut Wenzig (kwenzig@diw.de)
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -14,8 +14,9 @@
 -------------------------------------------------------------------------------*/
 *! soepclassinfo.ado: Displays info of a list of classification ids
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-*! 20160623 version 0.9 23 June 2016 - introduce soepfitsclass.ado
-*! version 0.9 23 June 2016 - introduce soepfitsclass.ado
+* version 0.5 July 2, 2020 - soepinitdta: seperate options for numlabel and translitumlauts, typos soepclassinfo
+* version 0.9 23 June 2016 - introduce soepfitsclass.ado
+* version 0.9 23 June 2016 - introduce soepfitsclass.ado
 
 program define soepclassinfo, rclass
 	version 13
@@ -29,14 +30,14 @@ quietly import delimited "`using'values_templates.csv", delimiter(comma) varname
 	numericcols(1 2 3) stringcols (4 5 6) clear
 quietly keep if inlist(id,`id')
 tempfile thisclass
-quietly save `thisclass', replace // tempfile mit zulässigen Angaben
+quietly save `thisclass', replace // tempfile mit zulÃ¤ssigen Angaben
 
 * Infos extrahieren
 keep id info
 * sicherstellen, dass nur eine Zeile pro id bleibt
-* 1. Zeilen mit leerem info löschen
+* 1. Zeilen mit leerem info lÃ¶schen
 quietly keep if info!=""
-* 2. duplicate löschen
+* 2. duplicate lÃ¶schen
 quietly duplicates drop id info, force
 * 3. nur die erste Zeile pro id erhalten
 tempvar rowcount

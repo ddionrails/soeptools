@@ -1,7 +1,7 @@
 /*-------------------------------------------------------------------------------
   soepinitdta.ado: init dataset from metadata
 
-    Copyright (C) 2019  Knut Wenzig (kwenzig@diw.de)
+    Copyright (C) 2020  Knut Wenzig (kwenzig@diw.de)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 *! soepinitdta.ado: init dataset from metadata
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
 
+* version 0.5 July 2, 2020 - soepinitdta: seperate options for numlabel and translitumlauts, typos soepclassinfo
 * version 0.4.8 March 3, 2020 - soepinitdta: english valulabels are correctly replaced by german one if empty
 * version 0.4.7 November 11, 2019 - soepinitdta: bilingual, replace inefficient numlabel command
 * version 0.4.6 August 27, 2019 - soepinitdta: del line
@@ -29,7 +30,7 @@
 
 program define soepinitdta, nclass
 	version 15 
-	syntax, mdpath(string) [study(string) dataset(string) version(string) soepstyle verbose]
+	syntax, mdpath(string) [study(string) dataset(string) version(string) numlabel translitumlauts verbose]
 	
 /*
 for debugging
@@ -107,7 +108,7 @@ isid variable
 local numberofvars = _N
 
 * Umlaute ausschreiben
-if "`soepstyle'"=="soepstyle" {
+if "`translitumlauts'"=="translitumlauts" {	
 	soeptranslituml label label_de
 }
 
@@ -163,8 +164,10 @@ replace label_de="[en] "+label if label_de=="" & label!=""
 
 
 * Umlaute ausschreiben und numlabel ersetzen
-if "`soepstyle'"=="soepstyle" {
+if "`translitumlauts'"=="translitumlauts" {
 	soeptranslituml label label_de
+}
+if "`numlabel'"=="numlabel" {
 	gen soepnumlabel = "["+string(value)+"] "
 
 	gen pos = ustrpos(label_de,soepnumlabel)
