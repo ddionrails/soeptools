@@ -14,12 +14,13 @@
 -------------------------------------------------------------------------------*/
 *! soepapplyvaluelabel.ado: Applies value label from templates to variables
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5.2 July 6, 2020 - soepapplyvaluelabel: seperate options for numlabel and translitumlauts
 *! version 0.3.3 4 July 2018 - soepapplyvalues: switch repo and introduce soepstyle
 *! version 0.10 (20160808) - introduce soepapplyvaluelabel/soepfitsclass
 
 program define soepapplyvaluelabel, rclass
 	version 14
-syntax varlist [using/] , id(string) [language(string) encoding(string) lblname(string) soepstyle]
+syntax varlist [using/] , id(string) [language(string) encoding(string) lblname(string) numlabel translitumlauts]
 
 tempfile myfile
 quietly save `myfile', replace
@@ -50,19 +51,25 @@ isid value
 local rows = _N
 display "rows: `rows'"
 
+* Umlaute ausschreiben und numlabel ersetzen
+if "`translitumlauts'"=="translitumlauts" {
+	soeptranslituml label`language_suffix'
+}
+if "`numlabel'"=="numlabel" {
+	gen soepnumlabel = "["+string(value)+"] "
+
+	gen pos = ustrpos(label`language_suffix',soepnumlabel)
+	clonevar label_new = label`language_suffix'
+	replace label_new = usubinstr(label_new,soepnumlabel,"",1) if pos==1
+	replace label_new = soepnumlabel + label_new
+	drop label`language_suffix' pos
+	rename label_new label`language_suffix'
+}
+
+
 forvalues row = 1/`rows' {
 	local value_`row' = value[`row']
 	local label_`row' = label`language_suffix'[`row']
-	if "`soepstyle'" == "soepstyle" {
-		local label_`row'=ustrregexra("`label_`row''","ä","ae")
-		local label_`row'=ustrregexra("`label_`row''","ö","oe")
-		local label_`row'=ustrregexra("`label_`row''","ü","ue")
-		local label_`row'=ustrregexra("`label_`row''","Ä","Ae")
-		local label_`row'=ustrregexra("`label_`row''","Ö","Oe")
-		local label_`row'=ustrregexra("`label_`row''","Ü","Ue")
-		local label_`row'=ustrregexra("`label_`row''","ß","ss")
-		local label_`row' "[`value_`row''] `label_`row''"		
-	} 
 }
 
 use `myfile', clear
