@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepcomparelabel.ado: Compares Labels of Two Files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5.3 August 17, 2020 - soepcomparelabel: detects now missing value labels
 *! version 0.2 31 Maerz 2017 - initial release
 
 program define soepcomparelabel , eclass
@@ -65,6 +66,7 @@ quietly save `values', replace
 
 quietly use "`using'", `clear'
 quietly describe, replace
+quietly levelsof name, clean local(vars)
 rename name variable
 keep variable varlab vallab
 preserve
@@ -121,20 +123,21 @@ quietly drop if value==.
 drop vallab 
 quietly append using `variablelabels'
 
-quietly merge 1:1 variable what value using `usingmeta', keep(match using) nogen
+quietly merge 1:1 variable what value using `usingmeta'
 quietly keep if mlabel!=ulabel
 quietly if _N==0 set obs 1
-quietly levelsof variable if what==1, clean local(varlab)
+quietly levelsof variable if what==1 & inlist(_merge, 2,3), clean local(varlab)
 * display "`varlab'"
 ereturn local varlab `varlab'
 quietly drop if what==1
 quietly if _N==0 set obs 1
 quietly gen vallab =""
-quietly levelsof variable, clean local(vars)
+*quietly levelsof variable, clean local(vars) * moved up*
+*display "`vars'"
 foreach	variable of local vars {
 	if _N==0 set obs 1
 	quietly levelsof value if variable=="`variable'", clean local(vals)
-	quietly replace vallab="`variable'(" + "`vals'" + ")" in 1
+	quietly replace vallab="`variable'(" + "`vals'" + ")" if variable=="`variable'"
 }
 quietly levelsof vallab if vallab!="", clean local(vallab)
 * display "`vallab'"
