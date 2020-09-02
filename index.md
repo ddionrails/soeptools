@@ -7,7 +7,7 @@ title: Stata ados from DIW Berlin / GSOEP
 # Stata
 
 ## Install
-net install soeptools, from(http://ddionrails.org/soeptools/)
+net install soeptools, from(http://ddionrails.github.io/soeptools/)
 
 ## Update
 adoupdate soeptools, update
