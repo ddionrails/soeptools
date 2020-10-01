@@ -19,7 +19,8 @@
 -------------------------------------------------------------------------------*/
 *! soepcompletemd.ado: extract metadata of variable and export
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
-*! version 0.4.1 June 18, 2019 - update soepcompletemd
+*! version 0.5.4 October 1, 2020 - soepcompletemd: import uses now option bindquote(strict); remove var label_en
+*! version 0.4.2 June 18, 2019 - update soepcompletemd
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 
 program define soepcompletemd, nclass
@@ -86,7 +87,7 @@ gen variable = "`varlist'"
 tempfile vc_update
 save `vc_update', replace
 
-import delimited "`targetfolder'/variable_categories.csv", varnames(1) clear encoding("UTF-8") stringcols(_all) 
+import delimited "`targetfolder'/variable_categories.csv", varnames(1) clear encoding("UTF-8") stringcols(_all) bindquotes(strict)
 if _N > 0 {
 	local study = study[1]
 	local dataset = dataset[1]
@@ -103,7 +104,7 @@ replace version = "`version'" if version==""
 
 save `vc_update', replace
 
-import delimited "`targetfolder'/variables.csv", varnames(1) clear encoding("UTF-8") stringcols(_all)
+import delimited "`targetfolder'/variables.csv", varnames(1) clear encoding("UTF-8") stringcols(_all) bindquotes(strict)
 if _N > 0 {
 	local study = study[1]
 	local dataset = dataset[1]
@@ -174,7 +175,7 @@ replace version = "`version'" if version==""
 replace variable = "`varlist'" if variable==""
 replace template_id = "`template'"
 replace label = ""
-replace label`langsuffix' = ""
+replace label_en = ""
 replace label`langsuffix' = "`varlabel'"
 replace concept = "`concept'"
 replace type = "`type'"
