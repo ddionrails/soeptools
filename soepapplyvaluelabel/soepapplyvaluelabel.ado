@@ -14,6 +14,7 @@
 -------------------------------------------------------------------------------*/
 *! soepapplyvaluelabel.ado: Applies value label from templates to variables
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5.5 October 16, 2020 - soepapplyvaluelabel: use new default repo for templates
 *! version 0.5.2 July 6, 2020 - soepapplyvaluelabel: seperate options for numlabel and translitumlauts
 *! version 0.3.3 4 July 2018 - soepapplyvalues: switch repo and introduce soepstyle
 *! version 0.10 (20160808) - introduce soepapplyvaluelabel/soepfitsclass
@@ -25,7 +26,7 @@ syntax varlist [using/] , id(string) [language(string) encoding(string) lblname(
 tempfile myfile
 quietly save `myfile', replace
 
-if "`using'"=="" local using "https://git.soep.de/kwenzig/additionalmetadata/raw/master/templates/"
+if "`using'"=="" local using "https://git.soep.de/kwenzig/publicadditionalmetadata/-/raw/master/templates/"
 
 if "`encoding'"=="" local encoding "utf-8"
 

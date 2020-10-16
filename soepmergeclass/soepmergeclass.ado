@@ -28,8 +28,7 @@ syntax varname [using/] , id(string) [verbose force language(string)]
 tempfile myfile
 quietly save `myfile', replace
 
-if "`using'"=="" local using "https://git.soep.de/kwenzig/additionalmetadata/raw/master/templates/"
-
+if "`using'"=="" local using "https://git.soep.de/kwenzig/publicadditionalmetadata/-/raw/master/templates/"
 quietly import delimited "`using'/values_templates.csv", delimiter(comma) varnames(1) ///
 	numericcols(1 2 3) stringcols (4 5 6) clear encoding("utf-8")  
 
