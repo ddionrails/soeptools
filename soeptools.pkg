@@ -5,11 +5,12 @@ d (see http://ddionrails.github.io/soeptools/)
 d
 d Requires: Stata version 15 or newer
 d
-d Distribution-Date: 20201001
+d Distribution-Date: 20201016
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
 
+* version 0.5.5 October 16, 2020 - soepapplyvaluelabel: use new default repo for templates
 * version 0.5.4 October 1, 2020 - soepcompletemd: import uses now option bindquote(strict); remove var label_en
 * version 0.5.3 August 17, 2020 - soepcomparelabel: detects now missing value labels
 * version 0.5.2 July 6, 2020 - soepapplyvaluelabel: seperate options for numlabel and translitumlauts
