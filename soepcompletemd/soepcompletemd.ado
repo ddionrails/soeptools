@@ -103,7 +103,9 @@ replace study = "`study'" if study==""
 replace dataset = "`dataset'" if dataset==""
 replace version = "`version'" if version==""
 
-sort variable value
+gen valuenum = real(value)
+sort variable valuenum
+drop valuenum
 export delimited using "`targetfolder'/variable_categories.csv",  delimiter(",") replace
 
 
