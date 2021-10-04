@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepcompletemd.ado: extract metadata of variable and export
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5.6 October 4, 2021 - soepcompletemd: remove var label_en (really), new sort variable_categories
 *! version 0.5.4 October 1, 2020 - soepcompletemd: import uses now option bindquote(strict); remove var label_en
 *! version 0.4.2 June 18, 2019 - update soepcompletemd
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
@@ -102,7 +103,9 @@ replace study = "`study'" if study==""
 replace dataset = "`dataset'" if dataset==""
 replace version = "`version'" if version==""
 
-save `vc_update', replace
+sort variable value
+export delimited using "`targetfolder'/variable_categories.csv",  delimiter(",") replace
+
 
 import delimited "`targetfolder'/variables.csv", varnames(1) clear encoding("UTF-8") stringcols(_all) bindquotes(strict)
 if _N > 0 {
@@ -175,10 +178,13 @@ replace version = "`version'" if version==""
 replace variable = "`varlist'" if variable==""
 replace template_id = "`template'"
 replace label = ""
-replace label_en = ""
+replace label_de = ""
 replace label`langsuffix' = "`varlabel'"
 replace concept = "`concept'"
 replace type = "`type'"
+replace description = ""
+replace description_de = ""
+replace minedtion = ""
 	
 tempfile variablepart
 save `variablepart', replace
@@ -187,19 +193,6 @@ append using `beforepart' `variablepart' `afterpart'
 drop part before after
 
 export delimited using "`targetfolder'/variables.csv",  delimiter(",") replace
-save `variablescsv', replace
-
-keep study dataset version variable
-gen varsort = _n
-save `variablescsv', replace
-
-use `vc_update', clear
-gen sort = _n
-merge m:1 study dataset version variable using `variablescsv', keep(match) nogenerate
-sort varsort sort
-drop varsort sort
-export delimited using "`targetfolder'/variable_categories.csv",  delimiter(",") replace
-save `vc_update', replace
 
 restore
 
