@@ -184,7 +184,7 @@ replace concept = "`concept'"
 replace type = "`type'"
 replace description = ""
 replace description_de = ""
-replace minedtion = ""
+replace minedition = ""
 	
 tempfile variablepart
 save `variablepart', replace
