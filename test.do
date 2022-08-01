@@ -1,14 +1,14 @@
 discard
-adopath ++ "D:/lokal/soeptools/soepcompletemd"
-adopath ++ "D:/lokal/soeptools/soeptranslituml"
-adopath ++ "D:/lokal/soeptools/soepinitdta"
-adopath ++ "D:/lokal/soeptools/soepallcons"
-adopath ++ "D:/lokal/soeptools/soepnextcons"
-adopath ++ "D:/lokal/soeptools/soepidvars"
-adopath ++ "D:/lokal/soeptools/soepusemerge"
+adopath ++ "C:/lokal/soeptools/soepcompletemd"
+adopath ++ "C:/lokal/soeptools/soeptranslituml"
+adopath ++ "C:/lokal/soeptools/soepinitdta"
+adopath ++ "C:/lokal/soeptools/soepallcons"
+adopath ++ "C:/lokal/soeptools/soepnextcons"
+adopath ++ "C:/lokal/soeptools/soepidvars"
+adopath ++ "C:/lokal/soeptools/soepusemerge"
 
 set trace off
-soepinitdta, mdpath(https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bhkind/v35/) study(soep-core) version(v35) verbose
+soepinitdta, mdpath(https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/blcamces/v38/) study(soep-core) version(v38) verbose
 
 
 quietly: import delimited "https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bcbfk/v35/variables.csv", ///
