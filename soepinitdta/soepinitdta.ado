@@ -20,6 +20,7 @@
 *! soepinitdta.ado: init dataset from metadata
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
 
+* version 0.5.7 August 1, 2022 - soepinitdta: values als long behandeln
 * version 0.5 July 2, 2020 - soepinitdta: seperate options for numlabel and translitumlauts, typos soepclassinfo
 * version 0.4.8 March 3, 2020 - soepinitdta: english valulabels are correctly replaced by german one if empty
 * version 0.4.7 November 11, 2019 - soepinitdta: bilingual, replace inefficient numlabel command
@@ -150,10 +151,11 @@ quietly: import delimited "`mdpath'variable_categories.csv", ///
 	delimiter(comma) bindquote(strict) case(preserve) ///
 	encoding(utf8) stringcols(_all) clear
 
+display "hey"
 * value erst numerisch machen
 quietly: drop if value==""
 rename value valuestring
-gen value=real(valuestring)
+gen long value=real(valuestring)
 drop valuestring
 
 * leere englische labels durch deutsche ersetzem
