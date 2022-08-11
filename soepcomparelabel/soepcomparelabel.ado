@@ -19,6 +19,8 @@
 -------------------------------------------------------------------------------*/
 *! soepcomparelabel.ado: Compares Labels of Two Files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+
+*! version 0.5.8 August 11, 2022 - soepcomparelabel: cut too long reporting for value labels
 *! version 0.5.3 August 17, 2020 - soepcomparelabel: detects now missing value labels
 *! version 0.2 31 Maerz 2017 - initial release
 
@@ -139,7 +141,10 @@ foreach	variable of local vars {
 	quietly levelsof value if variable=="`variable'", clean local(vals)
 	quietly replace vallab="`variable'(" + "`vals'" + ")" if variable=="`variable'"
 }
-quietly levelsof vallab if vallab!="", clean local(vallab)
+capture quietly levelsof vallab if vallab!="" in 1, clean local(vallab)
+if _rc!=0 {
+	local vallab "TOO MUCH TO DISPLAY"
+}
 * display "`vallab'"
 ereturn local vallab `vallab'
 
