@@ -5,11 +5,12 @@ d (see http://ddionrails.github.io/soeptools/)
 d
 d Requires: Stata version 15 or newer
 d
-d Distribution-Date: 20220810
+d Distribution-Date: 20230703
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
 
+* version 0.5.9 July 3, 2023 - soepcidvars: use option bindquotes
 * version 0.5.8 August 11, 2022 - soepcomparelabel: cut too long reporting for value labels
 * version 0.5.7 August 1, 2022 - soepinitdta: values als long behandeln
 * version 0.5.6 October 4, 2021 - soepcompletemd: remove var label_en (really), new sort variable_categories

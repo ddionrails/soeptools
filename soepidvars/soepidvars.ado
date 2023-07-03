@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepidvars.ado: varlist which uniquely identify oberservations
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5.9 July 3, 2023 - soepcidvars: use option bindquotes
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
 *! version 0.3.11 14 September 2019 - soepidvars: introduce required variables in person scenario
 *! version 0.3.2 4 July 2017 - soepidsvars: return nothing, if no keyvar is found
@@ -110,7 +111,7 @@ if "`dataset'"=="" {
 if "`dataset'"!="" {
 	tempfile temp1
 	save `temp1', replace
-	quietly: import delimited  "https://git.soep.de/kwenzig/publicecoredoku/raw/master/meta/logical_datasets.csv", varnames(1) clear encoding("UTF-8")
+	quietly: import delimited  "https://git.soep.de/kwenzig/publicecoredoku/raw/master/meta/logical_datasets.csv", varnames(1) clear encoding("UTF-8") bindquotes(strict)
 	quietly: keep if dataset=="`dataset'"
 	local testids = primary_keys[1]	
 	use `temp1', clear
