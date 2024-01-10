@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepallcons.ado: produce all consolidated from all partial and complete folders
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5.10 Jan 10, 2024 - soepallcons: option logcopypath
 *! version 0.5 April 9, 2020 - soepallcons, soepnextcons, soepmerge erfordern jetzt dta 118
 *! version 0.4.4 August 8, 2019 - soepallcons: debug for folder number > 9
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
@@ -28,7 +29,7 @@
 
 program define soepallcons, nclass
 	version 14 
-	syntax , version(string) [humepath(string) verbose empty replace arch rsync]
+	syntax , version(string) [humepath(string) logcopypath(string) verbose empty replace arch rsync]
 
 if "`verbose'"=="verbose" {
 	display `"version:`version':"'
@@ -111,7 +112,12 @@ foreach type of local types {
 		local stepplus1 = `step'+1
 		quietly if _N==0 set obs 1
 		quietly export excel using "`consroot'consolidated`stepplus1'/`type'results`timestamp'.xls", firstrow(variables) replace
+		if "`logcopypath'"!="" {
+			quietly export excel using "`logcopypath'/`arch'`type'results`timestamp'.xls", firstrow(variables) replace
+		}
 	}
 }
+
+
 
 end
