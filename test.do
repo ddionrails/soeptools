@@ -19,7 +19,7 @@ adopath ++ "C:/lokal/soeptools/soepidvars"
 adopath ++ "C:/lokal/soeptools/soepusemerge"
 
 set trace off
-soepinitdta, mdpath(https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/biol/v38/) study(soep-core) version(v38) verbose
+soepinitdta, mdpath(https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bmp/v39/) study(soep-core) version(v39) verbose
 
 
 quietly: import delimited "https://git.soep.de/kwenzig/publicecoredoku/raw/master/datasets/bcbfk/v35/variables.csv", ///
