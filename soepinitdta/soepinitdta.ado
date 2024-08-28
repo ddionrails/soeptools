@@ -20,6 +20,7 @@
 *! soepinitdta.ado: init dataset from metadata
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
 
+* version 0.5.11 August 28, 2024 - soepinitdta: import with maxquotedrows(unlimited)
 * version 0.5.7 August 1, 2022 - soepinitdta: values als long behandeln
 * version 0.5 July 2, 2020 - soepinitdta: seperate options for numlabel and translitumlauts, typos soepclassinfo
 * version 0.4.8 March 3, 2020 - soepinitdta: english valulabels are correctly replaced by german one if empty
@@ -63,8 +64,8 @@ if "`verbose'"=="verbose" {
 
 * store all possible names of keyvariables to local keys
 quietly: import delimited "https://git.soep.de/kwenzig/publicecoredoku/raw/master/meta/logical_datasets.csv", ///
-				delimiter(comma) bindquote(strict) case(preserve) ///
-				encoding(utf8) stringcols(_all) clear
+				delimiter(comma) maxquotedrows(unlimited) bindquote(strict) ///
+				case(preserve) encoding(utf8) stringcols(_all) clear
 quietly: keep if primary_keys!=""
 quietly: keep primary_keys
 quietly: duplicates drop primary_keys , force
@@ -84,8 +85,8 @@ if "`verbose'"=="verbose" {
 }
 
 quietly: import delimited "`mdpath'variables.csv", ///
-	delimiter(comma) bindquote(strict) case(preserve) ///
-	encoding(utf8) stringcols(_all) clear
+	delimiter(comma) maxquotedrows(unlimited) bindquote(strict) ///
+	case(preserve) encoding(utf8) stringcols(_all) clear
 
 if "`study'"!="" {
 	quietly: keep if study=="`study'"
@@ -148,9 +149,8 @@ if "`verbose'"=="verbose" {
 	display "Open variable_categories.csv."
 }
 quietly: import delimited "`mdpath'variable_categories.csv", ///
-	delimiter(comma) bindquote(strict) case(preserve) ///
-	encoding(utf8) stringcols(_all) clear
-
+	delimiter(comma) maxquotedrows(unlimited) bindquote(strict) ///
+	case(preserve) encoding(utf8) stringcols(_all) clear
 display "hey"
 * value erst numerisch machen
 quietly: drop if value==""
