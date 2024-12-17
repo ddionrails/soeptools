@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepallcons.ado: produce all consolidated from all partial and complete folders
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5.12 December 17, 2024 - soepallcons: pass humepath to seopnextcons
 *! version 0.5.10 Jan 10, 2024 - soepallcons: option logcopypath
 *! version 0.5 April 9, 2020 - soepallcons, soepnextcons, soepmerge erfordern jetzt dta 118
 *! version 0.4.4 August 8, 2019 - soepallcons: debug for folder number > 9
