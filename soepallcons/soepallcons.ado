@@ -94,7 +94,7 @@ forvalues step = 1/`steps' {
 	if "`verbose'"=="verbose" {
 		display "Processing step `step'."
 	}
-	soepnextcons, version(`version') step(`step') `empty' `replace' `rsync' `verbose' `arch' timestamp(`timestamp')
+	soepnextcons, humepath(`humepath') version(`version') step(`step') `empty' `replace' `rsync' `verbose' `arch' timestamp(`timestamp')
 	local types "partial complete"
 	foreach type of local types {
 		tempfile `type'sheet`step'
