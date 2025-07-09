@@ -19,6 +19,8 @@
 -------------------------------------------------------------------------------*/
 *! soepnextcons.ado: consolidate complete+partial+consolidated for next consolidated
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5.13 July, 9, 2025 - nextcons/comparelabel/usemerge: use .dta filename extension, comparelabel: verbose
+*! version 0.5.13 July, 8, 2025 - soepnextcons: use .dta filename extension
 *! version 0.5 April 9, 2020 - soepallcons, soepnextcons, soepmerge erfordern jetzt dta 118
 *! version 0.4.7 November 11, 2019 - soepnextcons: use option nolable nonotes for append
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
@@ -273,7 +275,7 @@ foreach file of local completes {
 		}
 		* empty consolidated file and write to tempfile consolidatedfile
 		* - will become master for append
-		quietly use `consolidated'`file', clear
+		quietly use "`consolidated'`file'.dta", clear
 		quietly ds
 		local consvarlist = r(varlist)
 		tempvar drophelp
@@ -286,7 +288,7 @@ foreach file of local completes {
 		tempfile consolidatedfile
 		quietly save `consolidatedfile', replace
 		
-		quietly use `complete'`file', clear
+		quietly use "`complete'`file'.dta", clear
 		quietly ds
 		local compvarlist = r(varlist)
 		local keepvarlist "`compvarlist'"
@@ -330,7 +332,7 @@ foreach file of local completes {
 			* desc
 			quietly append using `toappend', nolabel nonotes
 			* desc
-			quietly save `nextconsolidated'`file', replace
+			quietly save "`nextconsolidated'`file'.dta", replace
 		}
 		else {
 			local status "ERROR"
@@ -340,7 +342,7 @@ foreach file of local completes {
 			local consolidatedremain `consolidatedremain' `file'
 		}
 		if "`status'"!="ERROR" {
-			soepcomparelabel `consolidated'`file' using `complete'`file', clear
+			soepcomparelabel "`consolidated'`file'.dta" using "`complete'`file'.dta", clear `verbose'
 			local varlab "`e(varlab)'"
 			local vallab "`e(vallab)'"
 		}
@@ -418,8 +420,8 @@ foreach file of local partials {
 		}
 		quietly soepidvars, dataset (`file') `verbose'
 		local keyvars = r(idvars)
-		soepusemerge "`nextconsolidated'`file'.dta" using "`partial'", clear keyvars(`keyvars')
-		quietly save "`nextconsolidated'`file'", replace
+		soepusemerge "`nextconsolidated'`file'.dta" using "`partial'", clear keyvars(`keyvars') `verbose'
+		quietly save "`nextconsolidated'`file'.dta", replace
 		quietly use `partialresults', clear
 		quietly keep if master==""
 		if `e(usingfilesno)'>0 {
@@ -443,7 +445,7 @@ foreach file of local partials {
 			
 			if "`e(file`no'status)'"!="ERROR" {
 				preserve
-				soepcomparelabel "`nextconsolidated'/`e(masterfile)'" using "`partial'/`partialfile'" , clear
+				soepcomparelabel "`nextconsolidated'/`e(masterfile)'.dta" using "`partial'/`partialfile'" , clear `verbose'
 				restore
 					
 				quietly capture replace varlab="`e(varlab)'" in `no'

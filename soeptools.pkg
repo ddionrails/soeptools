@@ -5,11 +5,12 @@ d (see http://ddionrails.github.io/soeptools/)
 d
 d Requires: Stata version 15 or newer
 d
-d Distribution-Date: 20241217
+d Distribution-Date: 20250709
 d
 d Author: Knut Wenzig
 d Support: kwenzig@diw.de
 
+* version 0.5.13 July, 9, 2025 - nextcons/comparelabel/usemerge: use .dta filename extension, comparelabel: verbose
 * version 0.5.12 December 17, 2024 - soepallcons: pass humepath to seopnextcons
 * version 0.5.11 August 28, 2024 - soepinitdta: import with maxquotedrows(unlimited)
 * version 0.5.10 Jan 10, 2024 - soepallcons: option logcopypath

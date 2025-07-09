@@ -19,6 +19,7 @@
 -------------------------------------------------------------------------------*/
 *! soepusemerge.ado: Open a template file and integrate variables from related files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
+*! version 0.5.13 July, 9, 2025 - nextcons/comparelabel/usemerge: use .dta filename extension, comparelabel: verbose
 *! version 0.5 April 9, 2020 - soepallcons, soepnextcons, soepmerge erfordern jetzt dta 118
 *! version 0.4.7 November 11, 2019 - soepusermerge: use option nolable nonotes for merging
 *! version 0.4 June 17, 2019 - introduce soepinitdta, soepcompletemd, soeptranslituml, updates for v35
@@ -67,7 +68,7 @@ if "`verbose'"=="verbose" {
 }
 ereturn local masterfile `fileroot'
 tempfile usefile
-quietly use "`filepath'/`fileroot'", clear
+quietly use "`filepath'/`fileroot'.dta", clear
 quietly ds
 local mastervars = r(varlist)
 if "`verbose'"=="verbose" {

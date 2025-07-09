@@ -20,13 +20,14 @@
 *! soepcomparelabel.ado: Compares Labels of Two Files
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
 
+*! version 0.5.13 July, 9, 2025 - nextcons/comparelabel/usemerge: use .dta filename extension, comparelabel: verbose
 *! version 0.5.8 August 11, 2022 - soepcomparelabel: cut too long reporting for value labels
 *! version 0.5.3 August 17, 2020 - soepcomparelabel: detects now missing value labels
 *! version 0.2 31 Maerz 2017 - initial release
 
 program define soepcomparelabel , eclass
 	version 13
-	syntax anything(name=pathwfile) using/ , clear
+	syntax anything(name=pathwfile) using/ , clear verbose
 
 
 
@@ -91,7 +92,7 @@ quietly save `usingmeta', replace
 * local pathwfile "//hume/rdc-gen/consolidated/soep-core/soep.v33_test/consolidated1/wmuki2"
 * local clear "clear"
 
-uselabel using `"`filepath'/`fileroot'"', `clear'
+uselabel using `"`filepath'/`fileroot'.dta"', `clear'
 if _N== 0 {
 	quietly sysuse auto, `clear'
 	uselabel, `clear'
@@ -106,7 +107,7 @@ generate what=2
 tempfile values
 quietly save `values', replace
 * display `"`filepath'/`fileroot'"'
-quietly use `"`filepath'/`fileroot'"', `clear'
+quietly use `"`filepath'/`fileroot'.dta"', `clear'
 describe, replace
 rename name variable
 keep variable varlab vallab
