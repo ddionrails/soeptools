@@ -20,6 +20,7 @@
 *! soepinitdta.ado: init dataset from metadata
 *! Knut Wenzig (kwenzig@diw.de), SOEP, DIW Berlin, Germany
 
+* version 0.5.14 Oct. 21, 2026 - soepinitdta: trim blanks in variable column
 * version 0.5.11 August 28, 2024 - soepinitdta: import with maxquotedrows(unlimited)
 * version 0.5.7 August 1, 2022 - soepinitdta: values als long behandeln
 * version 0.5 July 2, 2020 - soepinitdta: seperate options for numlabel and translitumlauts, typos soepclassinfo
@@ -105,6 +106,7 @@ assert r(r)==1
 quietly: levelsof version
 assert r(r)==1
 
+replace variable = strtrim(variable)
 isid variable
 
 local numberofvars = _N
